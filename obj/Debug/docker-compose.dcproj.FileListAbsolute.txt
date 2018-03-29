@@ -1,1 +1,0 @@
-C:\Users\vladg\Documents\Development\vladg\GarageBetApi\obj\Debug\docker-compose.dcproj.CoreCompileInputs.cache
