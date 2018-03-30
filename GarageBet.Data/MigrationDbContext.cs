@@ -3,25 +3,21 @@ using Database.Views;
 using GarageBet.Domain.MM;
 using GarageBet.Domain.Tables;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.IO;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace GarageBet.Data
 {
-    public class DataContext : DbContext
+    public class MigrationDbContext : DbContext
     {
-
-        public DataContext(DbContextOptions<DataContext> options)
-            : base(options)
-        { }
-
-        public DataContext(DbContextOptionsBuilder<DataContext> options)
+        public MigrationDbContext(DbContextOptionsBuilder<MigrationDbContext> options)
             : base(options.Options)
-        { }
+        {
+
+        }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            // M:M Relationships
             builder.Entity<ChampionshipTeam>()
                 .HasKey(entity => new { entity.ChampionshipId, entity.TeamId });
 
@@ -29,21 +25,25 @@ namespace GarageBet.Data
                 .HasKey(entity => new { entity.ChampionshipId, entity.MatchId });
 
             builder.Entity<UserRole>()
-                .HasKey(entity => new { entity.RoleId, entity.UserId });
+                .HasKey(entity => new { entity.UserId, entity.RoleId });
+
+            builder.Query<MatchBet>().ToTable("MatchBetsView");
 
             builder.Entity<User>()
                 .HasIndex(entity => entity.Email)
                 .IsUnique();
-
-            // Views
-            builder.Query<MatchBet>()
-                .ToTable("MatchBetsView");
 
             base.OnModelCreating(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
+            options.UseMySql(
+               "server=localhost;port=3306;database=gb;uid=root;password=",
+               settings =>
+               {
+                   settings.MigrationsAssembly("GarageBet.Data");
+               });
             base.OnConfiguring(options);
         }
 
@@ -66,5 +66,14 @@ namespace GarageBet.Data
         public DbQuery<MatchBet> MatchBets { get; set; }
         #endregion
 
+    }
+
+    public class MigrationDbContextDesignTimeFactory : IDesignTimeDbContextFactory<MigrationDbContext>
+    {
+        public MigrationDbContext CreateDbContext(string[] args)
+        {
+            var builder = new DbContextOptionsBuilder<MigrationDbContext>();
+            return new MigrationDbContext(builder);
+        }
     }
 }

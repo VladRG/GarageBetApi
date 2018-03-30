@@ -1,5 +1,4 @@
-﻿using GarageBet.Domain;
-using GarageBet.Domain.Configuration;
+﻿using GarageBet.Domain.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,6 +7,7 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 using GarageBet.Data.Repositories;
 using GarageBet.Data.Interfaces;
+using GarageBet.Data;
 
 namespace GarageBet.Api.Configuration
 {

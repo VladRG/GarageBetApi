@@ -29,7 +29,7 @@ namespace GarageBet.Api.Controllers
         [AllowAnonymous]
         public IActionResult Index()
         {
-            return Ok(_userRepository.GetUsers());
+            return Ok(_userRepository.List());
         }
 
         [AllowAnonymous]

@@ -4,8 +4,7 @@ using System.Collections.Generic;
 
 namespace GarageBet.Data.Interfaces
 {
-    public interface IUserRepository
+    public interface IUserRepository : IRepository<User>
     {
-        ICollection<User> GetUsers();
     }
 }
