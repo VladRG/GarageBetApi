@@ -2,8 +2,7 @@
 
 namespace GarageBet.Data.Interfaces
 {
-    public interface IChampionshipRepository : IRepository<Championship>
+    public interface IBetRepository : IRepository<Bet>
     {
-
     }
 }

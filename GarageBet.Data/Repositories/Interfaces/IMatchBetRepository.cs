@@ -1,12 +1,10 @@
-﻿using System;
+﻿using Database.Views;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GarageBet.Data.Interfaces
 {
-    public interface IMatchBetRepository: IViewRepository
+    public interface IMatchBetRepository : IViewRepository
     {
+        IEnumerable<MatchBet> FindByUserId(long id);
     }
 }

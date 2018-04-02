@@ -24,6 +24,8 @@ namespace Database.Views
 
         public DateTime MatchDateTime { get; set; }
 
+        public long UserId { get; set; }
+
         public User User { get; set; }
     }
 }

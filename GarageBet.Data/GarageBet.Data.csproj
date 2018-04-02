@@ -209,6 +209,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataContext.cs" />
+    <Compile Include="Repositories\BetRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IBetRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IMatchRepository.cs" />
+    <Compile Include="Repositories\Interfaces\ITeamRepository.cs" />
     <Compile Include="Repositories\MatchBetRepository.cs" />
     <Compile Include="Repositories\Interfaces\IChampionshipRepository.cs" />
     <Compile Include="Repositories\Interfaces\IMatchBetRepository.cs" />
@@ -217,6 +221,8 @@
     <Compile Include="Interfaces\IViewRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\ChampionshipRepository.cs" />
+    <Compile Include="Repositories\MatchRepository.cs" />
+    <Compile Include="Repositories\TeamRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -236,7 +242,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="SQL\CreateMatchBetView.sql" />
-    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.Dotnet" Version="2.0.0-preview2-final" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

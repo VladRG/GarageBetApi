@@ -14,6 +14,18 @@ namespace GarageBet.Data.Repositories
             _context = context;
         }
 
+        #region IMatchBetRepository
+        public IEnumerable<MatchBet> FindByUserId(long id)
+        {
+            IQueryable<MatchBet> source = _context.MatchBets;
+            return source.GroupBy(row => row.UserId)
+                .SelectMany(row => row)
+                .Where(row => row.UserId == id)
+                .ToList();
+        }
+        #endregion
+
+        #region IViewRepository
         public ICollection<MatchBet> List()
         {
             IQueryable<MatchBet> source = _context.MatchBets;
@@ -24,5 +36,6 @@ namespace GarageBet.Data.Repositories
         {
             throw new System.NotImplementedException();
         }
+        #endregion
     }
 }

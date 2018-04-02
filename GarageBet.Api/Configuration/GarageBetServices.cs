@@ -40,13 +40,20 @@ namespace GarageBet.Api.Configuration
             services.Configure<DomainConfiguration>(Configuration.GetSection("Database"));
             services.AddDbContext<DataContext>(options =>
             {
-                options.UseSqlServer(
-                    Configuration.GetSection("Domain")["ConnectionString"]
-                    );
+                options.UseSqlServer(Configuration.GetSection("Domain")["ConnectionString"]);
             });
 
-            services.AddScoped<IUserRepository, UserRepository>();
+            ConfigureRepositoryDependencies(services);
+        }
+
+        private static void ConfigureRepositoryDependencies(IServiceCollection services)
+        {
+            services.AddScoped<IBetRepository, BetRepository>();
+            services.AddScoped<IChampionshipRepository, ChampionshipRepository>();
             services.AddScoped<IMatchBetRepository, MatchBetRepository>();
+            services.AddScoped<IMatchRepository, MatchRepository>();
+            services.AddScoped<ITeamRepository, TeamRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
         }
     }
 }

@@ -16,6 +16,8 @@ namespace GarageBet.Domain.Tables
 
         public DateTime LastLogin { get; set; }
 
+        public string Password { get; set; }
+
         public Role Role { get; set; }
 
         public ICollection<Bet> Bets { get; set; }
