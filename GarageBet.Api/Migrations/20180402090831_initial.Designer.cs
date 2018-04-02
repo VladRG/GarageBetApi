@@ -9,27 +9,28 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 
-namespace GarageBet.Data.Migrations
+namespace GarageBet.Api.Migrations
 {
-    [DbContext(typeof(MigrationDbContext))]
-    partial class MigrationDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(DataContext))]
+    [Migration("20180402090831_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn)
-                .HasAnnotation("ProductVersion", "2.1.0-preview1-28290");
+                .HasAnnotation("ProductVersion", "2.1.0-preview1-28290")
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Database.MM.UserRole", b =>
                 {
-                    b.Property<long>("UserId");
-
                     b.Property<long>("RoleId");
 
-                    b.HasKey("UserId", "RoleId");
+                    b.Property<long>("UserId");
 
-                    b.HasIndex("RoleId");
+                    b.HasKey("RoleId", "UserId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserRole");
                 });
@@ -91,14 +92,11 @@ namespace GarageBet.Data.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("CompetitiveYear")
-                        .HasMaxLength(10);
+                    b.Property<string>("CompetitiveYear");
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50);
+                    b.Property<string>("Name");
 
                     b.Property<DateTime>("UpdateAt");
 
@@ -142,9 +140,7 @@ namespace GarageBet.Data.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(15);
+                    b.Property<string>("Name");
 
                     b.Property<DateTime>("UpdateAt");
 
@@ -160,9 +156,7 @@ namespace GarageBet.Data.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50);
+                    b.Property<string>("Name");
 
                     b.Property<DateTime>("UpdateAt");
 
@@ -178,31 +172,25 @@ namespace GarageBet.Data.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(50);
+                    b.Property<string>("Email");
 
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(40);
+                    b.Property<string>("FirstName");
 
                     b.Property<DateTime>("LastLogin");
 
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(40);
+                    b.Property<string>("LastName");
 
                     b.Property<long?>("RoleId");
 
-                    b.Property<string>("Token")
-                        .HasMaxLength(250);
+                    b.Property<string>("Token");
 
                     b.Property<DateTime>("UpdateAt");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[Email] IS NOT NULL");
 
                     b.HasIndex("RoleId");
 

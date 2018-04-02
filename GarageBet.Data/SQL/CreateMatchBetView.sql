@@ -10,7 +10,8 @@ AS (
 		away_team.Name as AwayTeamName,
 		match.HomeScore as HomeScore,
 		match.AwayScore as AwayScore,
-		match.DateTime as MatchDateTime
+		match.DateTime as MatchDateTime,
+		bet.userId as userId
 	FROM
 		Bets as bet INNER JOIN
 		Matches as match 

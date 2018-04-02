@@ -40,15 +40,13 @@ namespace GarageBet.Api.Configuration
             services.Configure<DomainConfiguration>(Configuration.GetSection("Database"));
             services.AddDbContext<DataContext>(options =>
             {
-                options.UseMySql(
-                    Configuration.GetSection("Domain")["ConnectionString"],
-                    settings =>
-                    {
-                        settings.MigrationsAssembly("GarageBet.Api");
-                    });
+                options.UseSqlServer(
+                    Configuration.GetSection("Domain")["ConnectionString"]
+                    );
             });
 
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IMatchBetRepository, MatchBetRepository>();
         }
     }
 }

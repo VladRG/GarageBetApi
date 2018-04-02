@@ -3,8 +3,7 @@ using Database.Views;
 using GarageBet.Domain.MM;
 using GarageBet.Domain.Tables;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.IO;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace GarageBet.Data
 {
@@ -44,6 +43,11 @@ namespace GarageBet.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
+            options.UseSqlServer(
+                "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=GarageBet;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False",
+                settings => settings.MigrationsAssembly("GarageBet.Api")
+                );
+
             base.OnConfiguring(options);
         }
 
@@ -66,5 +70,14 @@ namespace GarageBet.Data
         public DbQuery<MatchBet> MatchBets { get; set; }
         #endregion
 
+    }
+
+    public class MigrationDbContextDesignTimeFactory : IDesignTimeDbContextFactory<DataContext>
+    {
+        public DataContext CreateDbContext(string[] args)
+        {
+            var builder = new DbContextOptionsBuilder<DataContext>();
+            return new DataContext(builder);
+        }
     }
 }

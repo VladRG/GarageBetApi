@@ -2,11 +2,9 @@
 using GarageBet.Domain.Tables;
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Database.Views
 {
-    [Table("MatchBetsView")]
     public class MatchBet
     {
         [Key]

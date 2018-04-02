@@ -2,11 +2,9 @@
 using GarageBet.Domain.MM;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GarageBet.Domain.Tables
 {
-    [Table("Matches")]
     public class Match : EntityBase
     {
         public short HomeScore { get; set; }
