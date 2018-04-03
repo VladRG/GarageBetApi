@@ -52,6 +52,22 @@ namespace GarageBet.Api.Controllers
             return Ok(bets);
         }
 
+        [HttpGet("/bet/history", Name = "List Bet History")]
+        public IActionResult GetBetHistory()
+        {
+            IEnumerable<MatchBet> matches;
+            try
+            {
+                User user = GetUserFromAuthorizationHeader();
+                matches = _matchBetRepository.ListHistory(user);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex.Message);
+            }
+            return Ok(matches);
+        }
+
         [HttpPost("/bet/{matchId}", Name = "Add Bet")]
         public IActionResult Add(long matchId, Bet bet)
         {

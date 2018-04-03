@@ -64,15 +64,9 @@ namespace GarageBet.Api.Controllers
         [HttpGet("/logout", Name = "Logout")]
         public IActionResult Logout()
         {
-            string tokenString = Request.Headers["Authorization"].ToString();
-            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-            JwtSecurityToken token = tokenHandler.ReadJwtToken(tokenString);
-            User user;
             try
             {
-                string email = token.Claims.ToList().Where(claim => claim.Type == ClaimTypes.Email).FirstOrDefault().Value;
-                user = _userRepository.FindByEmail(email);
-                user.Token = "";
+                User user = GetUserFromAuthorizationHeader();
                 _userRepository.Update(user);
             }
             catch (Exception ex)

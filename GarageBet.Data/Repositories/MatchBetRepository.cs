@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Database.Views;
 using GarageBet.Data.Interfaces;
+using GarageBet.Domain.Tables;
 
 namespace GarageBet.Data.Repositories
 {
@@ -22,6 +24,13 @@ namespace GarageBet.Data.Repositories
                 .SelectMany(row => row)
                 .Where(row => row.UserId == id)
                 .ToList();
+        }
+
+        public IEnumerable<MatchBet> ListHistory(User user)
+        {
+            return _context.MatchBets.AsQueryable()
+                 .Where(row => row.MatchDateTime > DateTime.Now)
+                 .ToList();
         }
         #endregion
 

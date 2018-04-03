@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace GarageBet.Data.Repositories
 {
@@ -22,6 +23,13 @@ namespace GarageBet.Data.Repositories
         {
             return _context.Matches
                 .Where(row => row.Championship.Id == id)
+                .ToList();
+        }
+
+        public IEnumerable<Match> ListAvailable()
+        {
+            return _context.Matches
+                .Where(match => match.DateTime < DateTime.Now)
                 .ToList();
         }
         #endregion

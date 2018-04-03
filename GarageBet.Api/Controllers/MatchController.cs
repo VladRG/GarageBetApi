@@ -48,6 +48,21 @@ namespace GarageBet.Api.Controllers
             return Ok(matches);
         }
 
+        [HttpGet("/match/available", Name = "Available Matches")]
+        public IActionResult GetAvailableMatches()
+        {
+            IEnumerable<Match> matches;
+            try
+            {
+                matches = _repository.ListAvailable();
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex.Message);
+            }
+            return Ok(matches);
+        }
+
         [HttpPost("/match", Name = "Add Match")]
         public IActionResult Add(Match match)
         {
