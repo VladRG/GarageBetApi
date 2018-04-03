@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 namespace GarageBet.Api.Controllers
 {
+    [Route("team")]
     public class TeamController : GbController
     {
         private ITeamRepository _repository;
@@ -15,7 +16,7 @@ namespace GarageBet.Api.Controllers
             _repository = repository;
         }
 
-        [HttpGet]
+        [HttpGet("/team", Name = "List Teams")]
         public IActionResult Index()
         {
             IEnumerable<Team> teams;
@@ -30,8 +31,8 @@ namespace GarageBet.Api.Controllers
             return Ok(teams);
         }
 
-        [HttpGet]
-        public IActionResult Find([FromQuery] long id)
+        [HttpGet("/team/{id}", Name = "Team details")]
+        public IActionResult Find(long id)
         {
             Team team;
             try
@@ -50,8 +51,8 @@ namespace GarageBet.Api.Controllers
             return Ok(team);
         }
 
-        [HttpPost]
-        public IActionResult Add([FromBody] Team team)
+        [HttpPost("/team", Name = "Add Team")]
+        public IActionResult Add(Team team)
         {
             try
             {
@@ -61,11 +62,11 @@ namespace GarageBet.Api.Controllers
             {
                 return InternalServerError(ex.Message);
             }
-            return Ok(team);
+            return Created(string.Format("/team/{0}", team.Id), null);
         }
 
-        [HttpPut]
-        public IActionResult Update([FromBody] Team team)
+        [HttpPut("/team/{id}", Name = "Update Team")]
+        public IActionResult Update(long id, Team team)
         {
             try
             {
@@ -78,8 +79,8 @@ namespace GarageBet.Api.Controllers
             return Ok(team);
         }
 
-        [HttpDelete]
-        public IActionResult Delete([FromQuery] long id)
+        [HttpDelete("/team/{id}", Name = "Delete Team")]
+        public IActionResult Delete(long id)
         {
             try
             {

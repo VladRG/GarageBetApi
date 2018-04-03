@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Database.MM;
+using System;
 
 namespace GarageBet.Data.Repositories
 {
@@ -16,6 +18,44 @@ namespace GarageBet.Data.Repositories
         {
             _context = context;
         }
+
+        #region IChampionshipRepository
+        public Championship AddTeam(Championship championship, Team team)
+        {
+            if (championship.Teams == null)
+                championship.Teams = new List<ChampionshipTeam>();
+
+            ChampionshipTeam championshipTeam =
+                Queryable.Where(championship.Teams as IQueryable<ChampionshipTeam>, row => row.TeamId == team.Id)
+                .FirstOrDefault();
+            if (championshipTeam != null)
+            {
+                throw new Exception("Exists");
+            }
+
+            championship.Teams.Add(
+                new ChampionshipTeam
+                {
+                    TeamId = team.Id,
+                    ChampionshipId = championship.Id
+                }
+            );
+            _context.SaveChanges();
+            return championship;
+        }
+
+        public Championship RemoveTeam(Championship championship, Team team)
+        {
+            ChampionshipTeam championshipTeam =
+                    Queryable.Where(championship.Teams as IQueryable<ChampionshipTeam>, row => row.TeamId == team.Id)
+                    .FirstOrDefault();
+
+            championship.Teams.Remove(championshipTeam);
+            Update(championship);
+
+            return championship;
+        }
+        #endregion
 
         #region IRepository
         public Championship Find(long id)
@@ -44,7 +84,9 @@ namespace GarageBet.Data.Repositories
 
         public IEnumerable<Championship> List()
         {
-            return _context.Championships.ToList();
+            return _context.Championships
+                .Include(row => row.Teams)
+                .ToList();
         }
 
         public async Task<List<Championship>> ListAsync()

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
@@ -15,10 +16,7 @@ namespace GarageBet.Api.Controllers
 {
     public class AuthenticationController : GbController
     {
-        public AuthenticationController(
-            IOptions<JwtConfiguration> jwtConfiguration,
-            IUserRepository userRepository
-            )
+        public AuthenticationController(IOptions<JwtConfiguration> jwtConfiguration, IUserRepository userRepository)
         {
             JwtConfig = jwtConfiguration.Value;
             _userRepository = userRepository;
@@ -28,19 +26,21 @@ namespace GarageBet.Api.Controllers
 
         private IUserRepository _userRepository;
 
-        [AllowAnonymous]
         public IActionResult Index()
         {
             return Ok(_userRepository.List());
         }
 
-        [AllowAnonymous]
-        public IActionResult Login([FromForm] string email, [FromForm] string password)
+        public IActionResult Login(User user)
         {
-            User user = null;
+            if (String.IsNullOrWhiteSpace(user.Email) || String.IsNullOrWhiteSpace(user.Password))
+            {
+                return BadRequest();
+            }
+
             try
             {
-                user = _userRepository.FindByEmail(email);
+                user = _userRepository.FindByEmail(user.Email);
             }
             catch (Exception ex)
             {
@@ -52,39 +52,35 @@ namespace GarageBet.Api.Controllers
                 return NotFound();
             }
 
-            if (String.Compare(password, user.Password, false) != 0)
+            if (String.Compare(user.Password, user.Password, false) != 0)
             {
                 return Unauthorized();
             }
 
-            StringBuilder roles = new StringBuilder();
-            foreach (var role in user.Roles)
+            AddAuthorizationHeader(user);
+            return Ok();
+        }
+
+        [HttpGet("/logout", Name = "Logout")]
+        public IActionResult Logout()
+        {
+            string tokenString = Request.Headers["Authorization"].ToString();
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+            JwtSecurityToken token = tokenHandler.ReadJwtToken(tokenString);
+            User user;
+            try
             {
-                roles.Append(role.RoleId + "#");
+                string email = token.Claims.ToList().Where(claim => claim.Type == ClaimTypes.Email).FirstOrDefault().Value;
+                user = _userRepository.FindByEmail(email);
+                user.Token = "";
+                _userRepository.Update(user);
             }
-            roles.Remove(roles.Length - 1, 1);
-
-            var claims = new[]
+            catch (Exception ex)
             {
-                new Claim(ClaimTypes.Email, email),
-                new Claim(ClaimTypes.Role, roles.ToString())
-            };
+                return InternalServerError(ex.Message);
+            }
 
-            SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtConfig.Key));
-            SigningCredentials credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            JwtSecurityToken tokenObject = new JwtSecurityToken(
-                    issuer: JwtConfig.Issuer,
-                    audience: JwtConfig.Audience,
-                    claims: claims,
-                    expires: DateTime.Now.AddMinutes(JwtConfig.Validity),
-                    signingCredentials: credentials
-                );
-
-            StringBuilder token = new StringBuilder("Bearer ");
-            token.Append(new JwtSecurityTokenHandler().WriteToken(tokenObject));
-
-            Request.HttpContext.Response.Headers.Add("Authorization", token.ToString());
+            Request.Headers.Remove("Authorization");
             return Ok();
         }
 
@@ -106,6 +102,29 @@ namespace GarageBet.Api.Controllers
                 return InternalServerError(ex.Message);
             }
             return Created(String.Empty, user);
+        }
+
+        private void AddAuthorizationHeader(User user)
+        {
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.Email, user.Email)
+            };
+
+            SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtConfig.Key));
+            SigningCredentials credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            JwtSecurityToken tokenObject = new JwtSecurityToken(
+                    issuer: JwtConfig.Issuer,
+                    audience: JwtConfig.Audience,
+                    claims: claims,
+                    expires: DateTime.Now.AddMinutes(JwtConfig.Validity),
+                    signingCredentials: credentials
+                );
+
+            StringBuilder token = new StringBuilder("Bearer ");
+            token.Append(new JwtSecurityTokenHandler().WriteToken(tokenObject));
+            Request.HttpContext.Response.Headers.Add("Authorization", token.ToString());
         }
     }
 }

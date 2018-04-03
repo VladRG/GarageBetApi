@@ -1,6 +1,5 @@
 ﻿using Database.MM;
 using Database.Views;
-using GarageBet.Domain.MM;
 using GarageBet.Domain.Tables;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -21,19 +20,42 @@ namespace GarageBet.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             // M:M Relationships
-            builder.Entity<ChampionshipTeam>()
-                .HasKey(entity => new { entity.ChampionshipId, entity.TeamId });
-
-            builder.Entity<ChampionshipMatch>()
-                .HasKey(entity => new { entity.ChampionshipId, entity.MatchId });
-
             builder.Entity<UserRole>()
-                .HasKey(entity => new { entity.RoleId, entity.UserId });
+                .HasKey(row => new { row.UserId, row.RoleId });
 
+            builder.Entity<ChampionshipTeam>()
+                .HasKey(row => new { row.ChampionshipId, row.TeamId });
+
+            // Entities
             builder.Entity<User>()
                 .HasIndex(entity => entity.Email)
                 .IsUnique();
 
+            builder.Entity<Championship>()
+                .HasIndex(row => new { row.Name, row.CompetitiveYear })
+                .IsUnique();
+
+            builder.Entity<Team>()
+                .HasIndex(row => new { row.Name })
+                .IsUnique();
+
+            builder.Entity<Match>()
+                .HasIndex(row => new { row.HomeTeamId, row.AwayTeamId, row.ChampionshipId })
+                .IsUnique();
+
+            builder.Entity<Bet>()
+                .HasIndex(row => new { row.UserId, row.MatchId })
+                .IsUnique();
+
+            builder.Entity<Match>()
+                .HasOne(row => row.HomeTeam)
+                .WithMany(row => row.HomeMatches)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Match>()
+                .HasOne(row => row.AwayTeam)
+                .WithMany(row => row.AwayMatches)
+                .OnDelete(DeleteBehavior.Restrict);
             // Views
             builder.Query<MatchBet>()
                 .ToTable("MatchBetsView");

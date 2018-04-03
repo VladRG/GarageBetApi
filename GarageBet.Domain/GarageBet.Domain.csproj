@@ -108,7 +108,6 @@
   <ItemGroup>
     <Compile Include="Configuration\DomainConfiguration.cs" />
     <Compile Include="EntityBase.cs" />
-    <Compile Include="MM\ChampionshipMatch.cs" />
     <Compile Include="MM\ChampionshipTeam.cs" />
     <Compile Include="MM\UserRole.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

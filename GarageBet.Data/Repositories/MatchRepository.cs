@@ -17,6 +17,15 @@ namespace GarageBet.Data.Repositories
             _context = context;
         }
 
+        #region IMatchRepository
+        public IEnumerable<Match> ListByChampionshipId(long id)
+        {
+            return _context.Matches
+                .Where(row => row.Championship.Id == id)
+                .ToList();
+        }
+        #endregion
+
         #region IRepository
         public Match Find(long id)
         {
