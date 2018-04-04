@@ -96,7 +96,7 @@ namespace GarageBet.Api.Controllers
             return Ok();
         }
 
-        [HttpPut("/championship/team/{id}", Name = "Add Team to Championship")]
+        [HttpPut("/championship/{id}/team", Name = "Add Team to Championship")]
         public IActionResult AddTeamToChampionship(long id, long teamId)
         {
             Championship championship;
@@ -119,7 +119,7 @@ namespace GarageBet.Api.Controllers
             return Ok();
         }
 
-        [HttpDelete("/championship/team/{id}", Name = "Remove Team from Championship")]
+        [HttpDelete("/championship/{id}/{teamId}", Name = "Remove Team from Championship")]
         public IActionResult RemoveTeamFromChampionship(long id, long teamId)
         {
             Championship championship;

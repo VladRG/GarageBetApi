@@ -7,7 +7,27 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GarageBet.Data", "GarageBet
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GarageBet.Domain", "GarageBet.Domain\GarageBet.Domain.csproj", "{76A50717-052D-4AEF-B516-3434412BDDA5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GarageBet.Api", "GarageBet.Api\GarageBet.Api.csproj", "{93AA17C8-9D56-4701-A084-9083B0F2D6E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GarageBet.Api", "GarageBet.Api\GarageBet.Api.csproj", "{93AA17C8-9D56-4701-A084-9083B0F2D6E8}"
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "GarageBetFrontend", "..\GarageBetFrontend\", "{2CF0072D-FC16-41DE-B00A-2BA4CF5E745F}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_62822"
+		Debug.AspNetCompiler.PhysicalPath = "..\GarageBetFrontend\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_62822\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_62822"
+		Release.AspNetCompiler.PhysicalPath = "..\GarageBetFrontend\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_62822\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "62822"
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +47,10 @@ Global
 		{93AA17C8-9D56-4701-A084-9083B0F2D6E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93AA17C8-9D56-4701-A084-9083B0F2D6E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93AA17C8-9D56-4701-A084-9083B0F2D6E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CF0072D-FC16-41DE-B00A-2BA4CF5E745F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CF0072D-FC16-41DE-B00A-2BA4CF5E745F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CF0072D-FC16-41DE-B00A-2BA4CF5E745F}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CF0072D-FC16-41DE-B00A-2BA4CF5E745F}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
