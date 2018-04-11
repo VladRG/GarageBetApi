@@ -54,7 +54,7 @@ namespace GarageBet.Api.Controllers
         }
 
         [HttpPost("/championship", Name = "Add Championship")]
-        public IActionResult Add(Championship championship)
+        public IActionResult Add([FromBody]Championship championship)
         {
             try
             {
@@ -68,7 +68,7 @@ namespace GarageBet.Api.Controllers
         }
 
         [HttpPut("/championship/{id}", Name = "Update Championship")]
-        public IActionResult Update(long id, Championship championship)
+        public IActionResult Update(long id, [FromBody]Championship championship)
         {
             try
             {

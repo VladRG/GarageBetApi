@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using GarageBet.Api.Configuration;
 using Swashbuckle.AspNetCore.Swagger;
+using Newtonsoft.Json.Serialization;
 
 namespace GarageBet.Api
 {
@@ -21,7 +22,12 @@ namespace GarageBet.Api
         {
             services.AddJwtAuthentication(Configuration);
             services.AddDatabaseConfiguration(Configuration);
-            services.AddMvc();
+            services.AddCors();
+
+            services.AddMvc().AddJsonOptions(options =>
+            {
+                options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            });
 
             services.AddSwaggerGen(swagger =>
             {
@@ -43,6 +49,12 @@ namespace GarageBet.Api
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyOrigin();
+                builder.AllowAnyMethod();
+                builder.AllowAnyHeader();
+            });
             app.UseAuthentication();
             app.UseStaticFiles();
             app.UseSwagger();

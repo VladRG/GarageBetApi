@@ -22,38 +22,12 @@ namespace GarageBet.Data.Repositories
         #region IChampionshipRepository
         public Championship AddTeam(Championship championship, Team team)
         {
-            if (championship.Teams == null)
-                championship.Teams = new List<ChampionshipTeam>();
-
-            ChampionshipTeam championshipTeam =
-                Queryable.Where(championship.Teams as IQueryable<ChampionshipTeam>, row => row.TeamId == team.Id)
-                .FirstOrDefault();
-            if (championshipTeam != null)
-            {
-                throw new Exception("Exists");
-            }
-
-            championship.Teams.Add(
-                new ChampionshipTeam
-                {
-                    TeamId = team.Id,
-                    ChampionshipId = championship.Id
-                }
-            );
-            _context.SaveChanges();
-            return championship;
+            return null;
         }
 
         public Championship RemoveTeam(Championship championship, Team team)
         {
-            ChampionshipTeam championshipTeam =
-                    Queryable.Where(championship.Teams as IQueryable<ChampionshipTeam>, row => row.TeamId == team.Id)
-                    .FirstOrDefault();
-
-            championship.Teams.Remove(championshipTeam);
-            Update(championship);
-
-            return championship;
+            return null;
         }
         #endregion
 
@@ -85,7 +59,7 @@ namespace GarageBet.Data.Repositories
         public IEnumerable<Championship> List()
         {
             return _context.Championships
-                .Include(row => row.Teams)
+                .Include("ChampionshipTeams.Team")
                 .ToList();
         }
 
@@ -108,14 +82,27 @@ namespace GarageBet.Data.Repositories
 
         public Championship Update(Championship entity)
         {
-            _context.Championships.Remove(entity);
+            _context.Championships.Update(entity);
             _context.SaveChanges();
+            entity.ChampionshipTeams.Clear();
+            var championshipTeams = new List<ChampionshipTeam>();
+            foreach (var team in entity.Teams)
+            {
+                championshipTeams.Add(new ChampionshipTeam
+                {
+                    Team = team,
+                    Championship = entity
+                });
+            }
+            _context.AddRange(championshipTeams);
+            _context.SaveChanges();
+
             return entity;
         }
 
         public async Task<Championship> UpdateAsync(Championship entity)
         {
-            _context.Championships.Remove(entity);
+            _context.Championships.Update(entity);
             await _context.SaveChangesAsync();
             return entity;
         }

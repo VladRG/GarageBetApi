@@ -26,6 +26,14 @@ namespace GarageBet.Data
             builder.Entity<ChampionshipTeam>()
                 .HasKey(row => new { row.ChampionshipId, row.TeamId });
 
+            builder.Entity<ChampionshipTeam>()
+                   .HasOne(e => e.Team)
+                   .WithMany("ChampionshipTeams");
+
+            builder.Entity<ChampionshipTeam>()
+                .HasOne(e => e.Championship)
+                .WithMany("ChampionshipTeams");
+
             // Entities
             builder.Entity<User>()
                 .HasIndex(entity => entity.Email)

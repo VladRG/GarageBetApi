@@ -51,8 +51,23 @@ namespace GarageBet.Api.Controllers
             return Ok(team);
         }
 
+        [HttpGet("/team/championship/{id}")]
+        public IActionResult ListForChampionship(long id)
+        {
+            IEnumerable<Team> teams;
+            try
+            {
+                teams = _repository.ListForChampionship(id);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex.Message);
+            }
+            return Ok(teams);
+        }
+
         [HttpPost("/team", Name = "Add Team")]
-        public IActionResult Add(Team team)
+        public IActionResult Add([FromBody]Team team)
         {
             try
             {
@@ -66,7 +81,7 @@ namespace GarageBet.Api.Controllers
         }
 
         [HttpPut("/team/{id}", Name = "Update Team")]
-        public IActionResult Update(long id, Team team)
+        public IActionResult Update(long id, [FromBody]Team team)
         {
             try
             {
@@ -93,5 +108,6 @@ namespace GarageBet.Api.Controllers
             }
             return Ok();
         }
+
     }
 }

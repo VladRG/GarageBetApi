@@ -17,6 +17,15 @@ namespace GarageBet.Data.Repositories
             _context = context;
         }
 
+        #region ITeamRepository
+        public IEnumerable<Team> ListForChampionship(long id)
+        {
+            return _context.Teams.Where(team =>
+                team.Championships.Where(championship => championship.Id == id).ToList().Count > 0
+            );
+        }
+        #endregion
+
         #region IRepository
         public Team Find(long id)
         {
@@ -66,14 +75,14 @@ namespace GarageBet.Data.Repositories
 
         public Team Update(Team entity)
         {
-            _context.Teams.Remove(entity);
+            _context.Teams.Update(entity);
             _context.SaveChanges();
             return entity;
         }
 
         public async Task<Team> UpdateAsync(Team entity)
         {
-            _context.Teams.Remove(entity);
+            _context.Teams.Update(entity);
             await _context.SaveChangesAsync();
             return entity;
         }

@@ -27,6 +27,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "GarageBetFrontend", "..\Gar
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "62822"
+		SlnRelativePath = "..\GarageBetFrontend\"
 	EndProjectSection
 EndProject
 Global

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.Internal;
 namespace GarageBet.Api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20180403124050_Initial")]
-    partial class Initial
+    [Migration("20180411133351_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -156,6 +156,10 @@ namespace GarageBet.Api.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
                     b.Property<DateTime>("CreatedAt");
 
                     b.Property<string>("Name")
@@ -209,12 +213,12 @@ namespace GarageBet.Api.Migrations
             modelBuilder.Entity("Database.MM.ChampionshipTeam", b =>
                 {
                     b.HasOne("GarageBet.Domain.Tables.Championship", "Championship")
-                        .WithMany("Teams")
+                        .WithMany("ChampionshipTeams")
                         .HasForeignKey("ChampionshipId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("GarageBet.Domain.Tables.Team", "Team")
-                        .WithMany("Championships")
+                        .WithMany("ChampionshipTeams")
                         .HasForeignKey("TeamId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

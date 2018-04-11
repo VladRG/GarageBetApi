@@ -1,6 +1,7 @@
 ﻿using Database.MM;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GarageBet.Domain.Tables
 {
@@ -10,7 +11,14 @@ namespace GarageBet.Domain.Tables
         [Required]
         public string Name { get; set; }
 
-        public ICollection<ChampionshipTeam> Championships { get; set; }
+        [Required]
+        [MaxLength(50)]
+        public string Country { get; set; }
+
+        public ICollection<ChampionshipTeam> ChampionshipTeams { get; } = new List<ChampionshipTeam>();
+
+        [NotMapped]
+        public ICollection<Championship> Championships = new List<Championship>();
 
         public ICollection<Match> HomeMatches { get; set; }
 
