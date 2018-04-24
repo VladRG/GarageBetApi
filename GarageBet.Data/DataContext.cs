@@ -15,7 +15,9 @@ namespace GarageBet.Data
 
         public DataContext(DbContextOptionsBuilder<DataContext> options)
             : base(options.Options)
-        { }
+        {
+
+        }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -29,6 +31,7 @@ namespace GarageBet.Data
             builder.Entity<ChampionshipTeam>()
                    .HasOne(e => e.Team)
                    .WithMany("ChampionshipTeams");
+
 
             builder.Entity<ChampionshipTeam>()
                 .HasOne(e => e.Championship)
@@ -68,6 +71,7 @@ namespace GarageBet.Data
             builder.Query<MatchBet>()
                 .ToTable("MatchBetsView");
 
+
             base.OnModelCreating(builder);
         }
 
@@ -88,6 +92,8 @@ namespace GarageBet.Data
         public DbSet<Role> Roles { get; set; }
 
         public DbSet<Championship> Championships { get; set; }
+
+        public DbSet<ChampionshipTeam> ChampionshipTeams { get; set; }
 
         public DbSet<Team> Teams { get; set; }
 

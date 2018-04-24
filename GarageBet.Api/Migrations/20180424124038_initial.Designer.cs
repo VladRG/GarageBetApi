@@ -12,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.Internal;
 namespace GarageBet.Api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20180424124038_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,7 +32,7 @@ namespace GarageBet.Api.Migrations
 
                     b.HasIndex("TeamId");
 
-                    b.ToTable("ChampionshipTeams");
+                    b.ToTable("ChampionshipTeam");
                 });
 
             modelBuilder.Entity("Database.MM.UserRole", b =>

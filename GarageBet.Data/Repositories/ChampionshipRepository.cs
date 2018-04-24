@@ -1,12 +1,10 @@
 ﻿using GarageBet.Data.Interfaces;
-using GarageBet.Domain;
 using GarageBet.Domain.Tables;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Database.MM;
-using System;
 
 namespace GarageBet.Data.Repositories
 {
@@ -45,6 +43,12 @@ namespace GarageBet.Data.Repositories
         public Championship Add(Championship entity)
         {
             _context.Championships.Add(entity);
+            var teams = new List<ChampionshipTeam>();
+            foreach (var team in entity.Teams)
+            {
+                teams.Add(new ChampionshipTeam { ChampionshipId = entity.Id, TeamId = team.Id });
+            }
+            _context.ChampionshipTeams.AddRange(teams);
             _context.SaveChanges();
             return entity;
         }
@@ -65,7 +69,9 @@ namespace GarageBet.Data.Repositories
 
         public async Task<List<Championship>> ListAsync()
         {
-            return await _context.Championships.ToListAsync();
+            return await _context.Championships
+                .Include("ChampionshipTeams.Team")
+                .ToListAsync();
         }
 
         public void Remove(Championship entity)
@@ -83,18 +89,15 @@ namespace GarageBet.Data.Repositories
         public Championship Update(Championship entity)
         {
             _context.Championships.Update(entity);
-            _context.SaveChanges();
-            entity.ChampionshipTeams.Clear();
-            var championshipTeams = new List<ChampionshipTeam>();
+            var teams = _context.ChampionshipTeams.Where(e => e.ChampionshipId == entity.Id);
+            _context.RemoveRange(teams);
+            var newTeams = new List<ChampionshipTeam>();
             foreach (var team in entity.Teams)
             {
-                championshipTeams.Add(new ChampionshipTeam
-                {
-                    Team = team,
-                    Championship = entity
-                });
+                newTeams.Add(new ChampionshipTeam { ChampionshipId = entity.Id, TeamId = team.Id });
             }
-            _context.AddRange(championshipTeams);
+
+            _context.AddRange(newTeams);
             _context.SaveChanges();
 
             return entity;

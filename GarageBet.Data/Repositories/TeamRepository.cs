@@ -20,9 +20,7 @@ namespace GarageBet.Data.Repositories
         #region ITeamRepository
         public IEnumerable<Team> ListForChampionship(long id)
         {
-            return _context.Teams.Where(team =>
-                team.Championships.Where(championship => championship.Id == id).ToList().Count > 0
-            );
+            return _context.Teams;
         }
         #endregion
 

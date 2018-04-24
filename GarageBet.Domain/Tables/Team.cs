@@ -1,7 +1,9 @@
 ﻿using Database.MM;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using GarageBet.Domain.Models;
 
 namespace GarageBet.Domain.Tables
 {
@@ -15,10 +17,14 @@ namespace GarageBet.Domain.Tables
         [MaxLength(50)]
         public string Country { get; set; }
 
-        public ICollection<ChampionshipTeam> ChampionshipTeams { get; } = new List<ChampionshipTeam>();
+        private ICollection<ChampionshipTeam> ChampionshipTeams { get; } = new List<ChampionshipTeam>();
 
         [NotMapped]
-        public ICollection<Championship> Championships = new List<Championship>();
+        public IEnumerable<ChampionshipModel> Championships => ChampionshipTeams.Select(e => new ChampionshipModel
+        {
+            Id = e.Championship.Id,
+            Name = e.Championship.Name
+        });
 
         public ICollection<Match> HomeMatches { get; set; }
 

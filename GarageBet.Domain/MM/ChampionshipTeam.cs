@@ -1,4 +1,5 @@
 ﻿using GarageBet.Domain.Tables;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Database.MM
 {
@@ -11,5 +12,11 @@ namespace Database.MM
         public Championship Championship { get; set; }
 
         public Team Team { get; set; }
+
+        public int Win { get; set; }
+
+        public int Draw { get; set; }
+
+        public int Lost { get; set; }
     }
 }
