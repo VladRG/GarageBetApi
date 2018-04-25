@@ -21,49 +21,11 @@ namespace GarageBet.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            // M:M Relationships
-            builder.Entity<ChampionshipTeam>()
-                .HasKey(row => new { row.ChampionshipId, row.TeamId });
 
-            builder.Entity<ChampionshipTeam>()
-                   .HasOne(e => e.Team)
-                   .WithMany("ChampionshipTeams");
+            ConfigureIndexes(builder);
+            ConfigureChampionshipTeam(builder);
+            ConfigureMatches(builder);
 
-
-            builder.Entity<ChampionshipTeam>()
-                .HasOne(e => e.Championship)
-                .WithMany("ChampionshipTeams");
-
-            // Entities
-            builder.Entity<User>()
-                .HasIndex(entity => entity.Email)
-                .IsUnique();
-
-            builder.Entity<Championship>()
-                .HasIndex(row => new { row.Name, row.CompetitiveYear })
-                .IsUnique();
-
-            builder.Entity<Team>()
-                .HasIndex(row => new { row.Name })
-                .IsUnique();
-
-            builder.Entity<Match>()
-                .HasIndex(row => new { row.HomeTeamId, row.AwayTeamId, row.ChampionshipId })
-                .IsUnique();
-
-            builder.Entity<Bet>()
-                .HasIndex(row => new { row.UserId, row.MatchId })
-                .IsUnique();
-
-            builder.Entity<Match>()
-                .HasOne(row => row.HomeTeam)
-                .WithMany(row => row.HomeMatches)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.Entity<Match>()
-                .HasOne(row => row.AwayTeam)
-                .WithMany(row => row.AwayMatches)
-                .OnDelete(DeleteBehavior.Restrict);
             // Views
             builder.Query<MatchBet>()
                 .ToTable("MatchBetsView");
@@ -101,6 +63,71 @@ namespace GarageBet.Data
 
         #region Views
         public DbQuery<MatchBet> MatchBets { get; set; }
+        #endregion
+
+        #region Configuration
+        private void ConfigureMatches(ModelBuilder builder)
+        {
+            builder.Entity<Championship>()
+               .HasMany(row => row.Matches)
+               .WithOne("ChampionshipNavigationProperty")
+               .HasForeignKey("ChampionshipId");
+
+            builder.Entity<Team>()
+                .HasMany(row => row.HomeMatches)
+                .WithOne("HomeTeamNavigationProperty")
+                .HasForeignKey("HomeTeamId");
+
+            builder.Entity<Team>()
+                .HasMany(row => row.AwayMatches)
+                .WithOne("AwayTeamNavigationProperty")
+                .HasForeignKey("AwayTeamId");
+
+        }
+
+        private void ConfigureChampionshipTeam(ModelBuilder builder)
+        {
+            builder.Entity<ChampionshipTeam>()
+                .HasKey(row => new { row.ChampionshipId, row.TeamId });
+
+            builder.Entity<ChampionshipTeam>()
+                   .HasOne(e => e.Team)
+                   .WithMany("ChampionshipTeams");
+
+
+            builder.Entity<ChampionshipTeam>()
+                .HasOne(e => e.Championship)
+                .WithMany("ChampionshipTeams");
+
+        }
+
+        private void ConfigureIndexes(ModelBuilder builder)
+        {
+
+            builder.Entity<Bet>()
+                .HasIndex(row => new { row.UserId, row.MatchId })
+                .IsUnique();
+
+            builder.Entity<Championship>()
+                .HasIndex(row => new { row.Name, row.CompetitiveYear })
+                .IsUnique();
+
+            builder.Entity<Match>()
+                .HasIndex(row => new { row.HomeTeamId, row.AwayTeamId, row.ChampionshipId })
+                .IsUnique();
+
+            builder.Entity<Team>()
+                .HasIndex(row => new { row.Name })
+                .IsUnique();
+
+            builder.Entity<User>()
+                .HasIndex(entity => entity.Email)
+                .IsUnique();
+
+            builder.Entity<UserClaim>()
+                .HasIndex(row => new { row.ClaimType, row.UserId })
+                .IsUnique();
+        }
         #endregion
 
     }

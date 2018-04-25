@@ -1,4 +1,5 @@
 ﻿
+using GarageBet.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -23,13 +24,35 @@ namespace GarageBet.Domain.Tables
         public long? ChampionshipId { get; set; }
 
         [ForeignKey("HomeTeamId")]
-        public Team HomeTeam { get; set; }
+        private Team HomeTeamNavigationProperty { get; set; }
 
         [ForeignKey("AwayTeamId")]
-        public Team AwayTeam { get; set; }
+        private Team AwayTeamNavigationProperty { get; set; }
 
-        public Championship Championship { get; set; }
+        private Championship ChampionshipNavigationProperty { get; set; }
 
         public ICollection<Bet> Bets { get; set; }
+
+        [NotMapped]
+        public ChampionshipModel Championship => new ChampionshipModel
+        {
+            Id = ChampionshipNavigationProperty.Id,
+            Name = ChampionshipNavigationProperty.Name
+        };
+
+        [NotMapped]
+        public TeamModel HomeTeam => new TeamModel
+        {
+            Id = HomeTeamNavigationProperty.Id,
+            Name = HomeTeamNavigationProperty.Name
+        };
+
+        [NotMapped]
+        public TeamModel AwayTeam => new TeamModel
+        {
+            Id = AwayTeamNavigationProperty.Id,
+            Name = AwayTeamNavigationProperty.Name
+        };
+
     }
 }

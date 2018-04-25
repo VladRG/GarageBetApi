@@ -61,7 +61,11 @@ namespace GarageBet.Data.Repositories
 
         public IEnumerable<Match> List()
         {
-            return _context.Matches.ToList();
+            return _context.Matches
+                .Include("ChampionshipNavigationProperty")
+                .Include("HomeTeamNavigationProperty")
+                .Include("AwayTeamNavigationProperty")
+                .ToList();
         }
 
         public async Task<List<Match>> ListAsync()
