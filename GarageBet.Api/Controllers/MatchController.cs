@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using GarageBet.Data.Interfaces;
 using GarageBet.Domain.Tables;
 using Microsoft.AspNetCore.Mvc;
@@ -64,7 +62,7 @@ namespace GarageBet.Api.Controllers
         }
 
         [HttpPost("/match", Name = "Add Match")]
-        public IActionResult Add(Match match)
+        public IActionResult Add([FromBody]Match match)
         {
             try
             {

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System.Collections.Generic;
 
 namespace GarageBet.Api.Controllers
 {
@@ -100,17 +101,19 @@ namespace GarageBet.Api.Controllers
 
         private void AddAuthorizationHeader(User user)
         {
-            var claims = new[]
+            var claims = new List<Claim>();
+
+            foreach (var claim in user.Claims)
             {
-                new Claim(ClaimTypes.Email, user.Email)
-            };
+                claims.Add(new Claim(claim.ClaimType, claim.ClaimValue));
+            }
 
             SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtConfig.Key));
             SigningCredentials credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             JwtSecurityToken tokenObject = new JwtSecurityToken(
                     issuer: JwtConfig.Issuer,
-                    audience: JwtConfig.Audience,
+                    audience: JwtConfig.Audience, 
                     claims: claims,
                     expires: DateTime.Now.AddMinutes(JwtConfig.Validity),
                     signingCredentials: credentials

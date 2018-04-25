@@ -27,24 +27,17 @@ namespace GarageBet.Api.Migrations
 
                     b.Property<long>("TeamId");
 
+                    b.Property<int>("Draw");
+
+                    b.Property<int>("Lost");
+
+                    b.Property<int>("Win");
+
                     b.HasKey("ChampionshipId", "TeamId");
 
                     b.HasIndex("TeamId");
 
                     b.ToTable("ChampionshipTeams");
-                });
-
-            modelBuilder.Entity("Database.MM.UserRole", b =>
-                {
-                    b.Property<long>("UserId");
-
-                    b.Property<long>("RoleId");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("UserRole");
                 });
 
             modelBuilder.Entity("GarageBet.Domain.Tables.Bet", b =>
@@ -133,23 +126,6 @@ namespace GarageBet.Api.Migrations
                     b.ToTable("Matches");
                 });
 
-            modelBuilder.Entity("GarageBet.Domain.Tables.Role", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("CreatedAt");
-
-                    b.Property<string>("Name")
-                        .IsRequired();
-
-                    b.Property<DateTime>("UpdateAt");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Roles");
-                });
-
             modelBuilder.Entity("GarageBet.Domain.Tables.Team", b =>
                 {
                     b.Property<long>("Id")
@@ -209,6 +185,28 @@ namespace GarageBet.Api.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("GarageBet.Domain.Tables.UserClaim", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ClaimType");
+
+                    b.Property<string>("ClaimValue");
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<DateTime>("UpdateAt");
+
+                    b.Property<long>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserClaims");
+                });
+
             modelBuilder.Entity("Database.MM.ChampionshipTeam", b =>
                 {
                     b.HasOne("GarageBet.Domain.Tables.Championship", "Championship")
@@ -219,19 +217,6 @@ namespace GarageBet.Api.Migrations
                     b.HasOne("GarageBet.Domain.Tables.Team", "Team")
                         .WithMany("ChampionshipTeams")
                         .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Database.MM.UserRole", b =>
-                {
-                    b.HasOne("GarageBet.Domain.Tables.Role", "Role")
-                        .WithMany("Users")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("GarageBet.Domain.Tables.User", "User")
-                        .WithMany("Roles")
-                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -263,6 +248,14 @@ namespace GarageBet.Api.Migrations
                         .WithMany("HomeMatches")
                         .HasForeignKey("HomeTeamId")
                         .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("GarageBet.Domain.Tables.UserClaim", b =>
+                {
+                    b.HasOne("GarageBet.Domain.Tables.User", "User")
+                        .WithMany("Claims")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

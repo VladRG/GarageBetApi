@@ -22,9 +22,6 @@ namespace GarageBet.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             // M:M Relationships
-            builder.Entity<UserRole>()
-                .HasKey(row => new { row.UserId, row.RoleId });
-
             builder.Entity<ChampionshipTeam>()
                 .HasKey(row => new { row.ChampionshipId, row.TeamId });
 
@@ -89,7 +86,7 @@ namespace GarageBet.Data
         #region Tables
         public DbSet<User> Users { get; set; }
 
-        public DbSet<Role> Roles { get; set; }
+        public DbSet<UserClaim> UserClaims { get; set; }
 
         public DbSet<Championship> Championships { get; set; }
 

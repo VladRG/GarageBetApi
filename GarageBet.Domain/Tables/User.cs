@@ -1,5 +1,4 @@
-﻿using Database.MM;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -27,7 +26,7 @@ namespace GarageBet.Domain.Tables
 
         public ICollection<Bet> Bets { get; set; }
 
-        public ICollection<UserRole> Roles { get; set; }
+        public ICollection<UserClaim> Claims { get; set; }
 
     }
 

@@ -32,6 +32,14 @@ namespace GarageBet.Api.Configuration
                    };
                });
 
+            services.AddAuthorization(configuration =>
+            {
+                configuration.AddPolicy("CanCloseMatches", policy =>
+                {
+                    policy.RequireClaim("CanCloseMatches", "true");
+                });
+            });
+
             services.Configure<JwtConfiguration>(Configuration.GetSection("Jwt"));
         }
 
