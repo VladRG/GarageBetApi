@@ -85,7 +85,7 @@ namespace GarageBet.Api.Controllers
             User existingUser = _userRepository.FindByEmail(user.Email);
             if (existingUser != null)
             {
-                return StatusCode(HttpStatusCode.Conflict);
+                return StatusCode((int)HttpStatusCode.Conflict);
             }
 
             try

@@ -1,5 +1,4 @@
 ﻿using Database.MM;
-using Database.Views;
 using GarageBet.Domain.Tables;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -21,26 +20,17 @@ namespace GarageBet.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-
             ConfigureIndexes(builder);
             ConfigureChampionshipTeam(builder);
             ConfigureMatches(builder);
-
-            // Views
-            builder.Query<MatchBet>()
-                .ToTable("MatchBetsView");
-
-
             base.OnModelCreating(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            options.UseSqlServer(
-                "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=GarageBet;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False",
-                settings => settings.MigrationsAssembly("GarageBet.Api")
-                );
-
+            //options.UseMySql("Server=localhost;database=garagebet;user=root;pwd=", config => {
+            //    config.MigrationsAssembly("GarageBet.Api");
+            //});
             base.OnConfiguring(options);
         }
 
@@ -59,10 +49,6 @@ namespace GarageBet.Data
         public DbSet<Bet> Bets { get; set; }
 
         public DbSet<Match> Matches { get; set; }
-        #endregion
-
-        #region Views
-        public DbQuery<MatchBet> MatchBets { get; set; }
         #endregion
 
         #region Configuration
@@ -103,7 +89,6 @@ namespace GarageBet.Data
 
         private void ConfigureIndexes(ModelBuilder builder)
         {
-
             builder.Entity<Bet>()
                 .HasIndex(row => new { row.UserId, row.MatchId })
                 .IsUnique();
@@ -129,7 +114,6 @@ namespace GarageBet.Data
                 .IsUnique();
         }
         #endregion
-
     }
 
     public class MigrationDbContextDesignTimeFactory : IDesignTimeDbContextFactory<DataContext>
@@ -141,3 +125,4 @@ namespace GarageBet.Data
         }
     }
 }
+

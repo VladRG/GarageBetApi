@@ -32,7 +32,8 @@ namespace GarageBet.Data.Repositories
         #region IRepository
         public Championship Find(long id)
         {
-            return _context.Championships.Find(id);
+            Championship championship = _context.Championships.Find(id).SetNavigationProperties();
+            return championship;
         }
 
         public async Task<Championship> FindAsync(long id)
@@ -64,6 +65,7 @@ namespace GarageBet.Data.Repositories
         {
             return _context.Championships
                 .Include("ChampionshipTeams.Team")
+                .Select(entity => entity.SetNavigationProperties())
                 .ToList();
         }
 
@@ -89,15 +91,17 @@ namespace GarageBet.Data.Repositories
         public Championship Update(Championship entity)
         {
             _context.Championships.Update(entity);
-            var teams = _context.ChampionshipTeams.Where(e => e.ChampionshipId == entity.Id);
+            var teams = _context.ChampionshipTeams.Where(e => e.ChampionshipId == entity.Id).ToList();
             _context.RemoveRange(teams);
-            var newTeams = new List<ChampionshipTeam>();
+            _context.SaveChanges();
+
+            teams = new List<ChampionshipTeam>();
             foreach (var team in entity.Teams)
             {
-                newTeams.Add(new ChampionshipTeam { ChampionshipId = entity.Id, TeamId = team.Id });
+                teams.Add(new ChampionshipTeam { ChampionshipId = entity.Id, TeamId = team.Id });
             }
 
-            _context.AddRange(newTeams);
+            _context.AddRange(teams);
             _context.SaveChanges();
 
             return entity;

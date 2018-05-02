@@ -1,4 +1,5 @@
 ﻿using GarageBet.Data.Interfaces;
+using GarageBet.Domain.Models;
 using GarageBet.Domain.Tables;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -23,6 +24,21 @@ namespace GarageBet.Api.Controllers
             try
             {
                 teams = _repository.List();
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex.Message);
+            }
+            return Ok(teams);
+        }
+
+        [HttpGet("/team/model", Name = "List Team Models")]
+        public IActionResult ListModel()
+        {
+            IEnumerable<TeamModel> teams;
+            try
+            {
+                teams = _repository.ListModels();
             }
             catch (Exception ex)
             {

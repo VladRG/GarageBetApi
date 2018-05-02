@@ -24,6 +24,7 @@ namespace GarageBet.Api.Controllers
             IEnumerable<Championship> championships;
             try
             {
+
                 championships = _repository.List();
             }
             catch (Exception ex)

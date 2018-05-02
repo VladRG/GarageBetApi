@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using GarageBet.Domain.Models;
 
 namespace GarageBet.Data.Repositories
 {
@@ -21,6 +22,15 @@ namespace GarageBet.Data.Repositories
         public IEnumerable<Team> ListForChampionship(long id)
         {
             return _context.Teams;
+        }
+
+        public IEnumerable<TeamModel> ListModels()
+        {
+            return _context.Teams.Select(entity => new TeamModel
+            {
+                Id = entity.Id,
+                Name = entity.Name
+            });
         }
         #endregion
 

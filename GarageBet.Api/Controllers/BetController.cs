@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Database.Views;
 using GarageBet.Data.Interfaces;
 using GarageBet.Domain.Tables;
 using Microsoft.AspNetCore.Mvc;
@@ -9,59 +8,29 @@ namespace GarageBet.Api.Controllers
 {
     public class BetController : GbController
     {
-        private IMatchBetRepository _matchBetRepository;
         private IBetRepository _repository;
 
-        public BetController(IBetRepository repository, IMatchBetRepository matchBetRepository)
+        public BetController(IBetRepository repository)
         {
             _repository = repository;
-            _matchBetRepository = matchBetRepository;
         }
 
         [HttpGet("/bet", Name = "List Bets")]
         public IActionResult Index()
         {
-            IEnumerable<MatchBet> bets;
-            try
-            {
-                bets = _matchBetRepository.List();
-            }
-            catch (Exception ex)
-            {
-                return InternalServerError(ex.Message);
-            }
-            return Ok(bets);
+            return Ok();
         }
 
         [HttpGet("/bet/{id}")]
         public IActionResult FindByUser(long id)
         {
-            IEnumerable<MatchBet> bets;
-            try
-            {
-                bets = _matchBetRepository.FindByUserId(id);
-            }
-            catch (Exception ex)
-            {
-                return InternalServerError(ex.Message);
-            }
-            return Ok(bets);
+            return Ok();
         }
 
         [HttpGet("/bet/history", Name = "List Bet History")]
         public IActionResult GetBetHistory()
         {
-            IEnumerable<MatchBet> matches;
-            try
-            {
-                User user = GetUserFromAuthorizationHeader();
-                matches = _matchBetRepository.ListHistory(user);
-            }
-            catch (Exception ex)
-            {
-                return InternalServerError(ex.Message);
-            }
-            return Ok(matches);
+            return Ok();
         }
 
         [HttpPost("/bet/{matchId}", Name = "Add Bet")]

@@ -22,10 +22,16 @@ namespace GarageBet.Domain.Tables
         private ICollection<ChampionshipTeam> ChampionshipTeams { get; } = new List<ChampionshipTeam>();
 
         [NotMapped]
-        public IEnumerable<TeamModel> Teams => ChampionshipTeams.Select(e => new TeamModel
+        public List<TeamModel> Teams { get; set; }
+
+        public Championship SetNavigationProperties()
         {
-            Id = e.Team.Id,
-            Name = e.Team.Name
-        });
+            Teams = ChampionshipTeams.Select(entity => new TeamModel
+            {
+                Id = entity.Team.Id,
+                Name = entity.Team.Name
+            }).ToList();
+            return this;
+        }
     }
 }
