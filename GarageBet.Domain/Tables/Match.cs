@@ -34,25 +34,34 @@ namespace GarageBet.Domain.Tables
         public ICollection<Bet> Bets { get; set; }
 
         [NotMapped]
-        public ChampionshipModel Championship => new ChampionshipModel
-        {
-            Id = ChampionshipNavigationProperty.Id,
-            Name = ChampionshipNavigationProperty.Name
-        };
+        public ChampionshipModel Championship { get; set; }
 
         [NotMapped]
-        public TeamModel HomeTeam => new TeamModel
-        {
-            Id = HomeTeamNavigationProperty.Id,
-            Name = HomeTeamNavigationProperty.Name
-        };
+        public TeamModel HomeTeam { get; set; }
 
         [NotMapped]
-        public TeamModel AwayTeam => new TeamModel
-        {
-            Id = AwayTeamNavigationProperty.Id,
-            Name = AwayTeamNavigationProperty.Name
-        };
+        public TeamModel AwayTeam { get; set; }
 
+        public Match SetNavigationProperties()
+        {
+            Championship = new ChampionshipModel
+            {
+                Id = ChampionshipNavigationProperty.Id,
+                Name = ChampionshipNavigationProperty.Name
+            };
+
+            HomeTeam = new TeamModel
+            {
+                Id = HomeTeamNavigationProperty.Id,
+                Name = HomeTeamNavigationProperty.Name
+            };
+
+            AwayTeam = new TeamModel
+            {
+                Id = AwayTeamNavigationProperty.Id,
+                Name = AwayTeamNavigationProperty.Name
+            };
+            return this;
+        }
     }
 }

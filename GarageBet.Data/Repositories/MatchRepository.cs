@@ -65,6 +65,7 @@ namespace GarageBet.Data.Repositories
                 .Include("ChampionshipNavigationProperty")
                 .Include("HomeTeamNavigationProperty")
                 .Include("AwayTeamNavigationProperty")
+                .Select(entity => entity.SetNavigationProperties())
                 .ToList();
         }
 

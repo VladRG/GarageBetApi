@@ -19,6 +19,13 @@ namespace GarageBet.Api
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((WebHostBuilderContext context, IConfigurationBuilder builder) =>
+                {
+                    builder.Sources.Clear();
+                    builder
+                        .AddJsonFile("appsettings.json", true, true)
+                        .AddEnvironmentVariables();
+                })
                 .UseStartup<Startup>()
                 .Build();
     }
