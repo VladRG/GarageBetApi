@@ -12,9 +12,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
+using System.Security.Cryptography;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.AspNetCore.Identity;
+using GarageBet.Api.Models;
 
 namespace GarageBet.Api.Controllers
 {
+    [Route("auth")]
     public class AuthenticationController : GbController
     {
         public AuthenticationController(IOptions<JwtConfiguration> jwtConfiguration, IUserRepository userRepository)
@@ -32,8 +37,13 @@ namespace GarageBet.Api.Controllers
             return Ok(_userRepository.List());
         }
 
-        public IActionResult Login(User user)
+        [AllowAnonymous]
+        [HttpPost("/login")]
+        public IActionResult Login([FromBody]User user)
         {
+
+            User existingUser;
+
             if (String.IsNullOrWhiteSpace(user.Email) || String.IsNullOrWhiteSpace(user.Password))
             {
                 return BadRequest();
@@ -41,7 +51,7 @@ namespace GarageBet.Api.Controllers
 
             try
             {
-                user = _userRepository.FindByEmail(user.Email);
+                existingUser = _userRepository.FindByEmail(user.Email.ToLower());
             }
             catch (Exception ex)
             {
@@ -52,17 +62,16 @@ namespace GarageBet.Api.Controllers
             {
                 return NotFound();
             }
-
-            if (String.Compare(user.Password, user.Password, false) != 0)
+            else if (CheckPasswordHash(existingUser, user) == PasswordVerificationResult.Failed)
             {
                 return Unauthorized();
             }
 
-            AddAuthorizationHeader(user);
-            return Ok();
+            AddAuthorizationHeader(existingUser);
+            return Ok(GetUserModel(existingUser));
         }
 
-        [HttpGet("/logout", Name = "Logout")]
+        [HttpPost("/logout", Name = "Logout")]
         public IActionResult Logout()
         {
             try
@@ -80,6 +89,7 @@ namespace GarageBet.Api.Controllers
         }
 
         [AllowAnonymous]
+        [HttpPost("/register")]
         public IActionResult Register([FromBody] User user)
         {
             User existingUser = _userRepository.FindByEmail(user.Email);
@@ -90,22 +100,28 @@ namespace GarageBet.Api.Controllers
 
             try
             {
+                user.Password = HashPassword(user);
+                user.Email = user.Email.ToLower();
                 _userRepository.Add(user);
             }
             catch (Exception ex)
             {
                 return InternalServerError(ex.Message);
             }
-            return Created(String.Empty, user);
+            AddAuthorizationHeader(user);
+            return Created(String.Empty, GetUserModel(user));
         }
 
         private void AddAuthorizationHeader(User user)
         {
             var claims = new List<Claim>();
 
-            foreach (var claim in user.Claims)
+            if (user.Claims != null)
             {
-                claims.Add(new Claim(claim.ClaimType, claim.ClaimValue));
+                foreach (var claim in user.Claims)
+                {
+                    claims.Add(new Claim(claim.ClaimType, claim.ClaimValue));
+                }
             }
 
             SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtConfig.Key));
@@ -113,15 +129,51 @@ namespace GarageBet.Api.Controllers
 
             JwtSecurityToken tokenObject = new JwtSecurityToken(
                     issuer: JwtConfig.Issuer,
-                    audience: JwtConfig.Audience, 
+                    audience: JwtConfig.Audience,
                     claims: claims,
                     expires: DateTime.Now.AddMinutes(JwtConfig.Validity),
                     signingCredentials: credentials
                 );
 
             StringBuilder token = new StringBuilder("Bearer ");
-            token.Append(new JwtSecurityTokenHandler().WriteToken(tokenObject));
+            string tokenValue = new JwtSecurityTokenHandler().WriteToken(tokenObject);
+            token.Append(tokenValue);
+            try
+            {
+                user.Token = tokenValue;
+                _userRepository.Update(user);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
             Request.HttpContext.Response.Headers.Add("Authorization", token.ToString());
+        }
+
+        private string HashPassword(User user)
+        {
+            var hasher = new PasswordHasher<User>();
+            return hasher.HashPassword(user, user.Password);
+        }
+
+        private PasswordVerificationResult CheckPasswordHash(User existingUser, User user)
+        {
+            var hasher = new PasswordHasher<User>();
+            return hasher.VerifyHashedPassword(
+                existingUser,
+                existingUser.Password,
+                user.Password
+            );
+        }
+
+        private UserModel GetUserModel(User user)
+        {
+            return new UserModel
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email
+            };
         }
     }
 }

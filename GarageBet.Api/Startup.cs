@@ -21,7 +21,6 @@ namespace GarageBet.Api
         {
             services.AddJwtAuthentication(Configuration);
             services.AddDatabaseConfiguration(Configuration);
-            services.AddCors();
 
             services.AddMvc().AddJsonOptions(options =>
             {
@@ -42,6 +41,7 @@ namespace GarageBet.Api
                 builder.AllowAnyOrigin();
                 builder.AllowAnyMethod();
                 builder.AllowAnyHeader();
+                builder.WithExposedHeaders("Authorization", "Content-Type");
             });
             app.UseAuthentication();
             app.UseStaticFiles();
