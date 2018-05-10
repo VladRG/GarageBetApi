@@ -23,10 +23,8 @@ namespace GarageBet.Domain.Tables
 
         public long? ChampionshipId { get; set; }
 
-        [ForeignKey("HomeTeamId")]
         private Team HomeTeamNavigationProperty { get; set; }
 
-        [ForeignKey("AwayTeamId")]
         private Team AwayTeamNavigationProperty { get; set; }
 
         private Championship ChampionshipNavigationProperty { get; set; }

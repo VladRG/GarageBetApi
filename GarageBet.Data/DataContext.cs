@@ -68,7 +68,6 @@ namespace GarageBet.Data
                 .HasMany(row => row.AwayMatches)
                 .WithOne("AwayTeamNavigationProperty")
                 .HasForeignKey("AwayTeamId");
-
         }
 
         private void ConfigureChampionshipTeam(ModelBuilder builder)

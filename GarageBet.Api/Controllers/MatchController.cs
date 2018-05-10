@@ -34,16 +34,16 @@ namespace GarageBet.Api.Controllers
         [HttpGet("/match/{id}", Name = "Match details")]
         public IActionResult ListByChampionship(long id)
         {
-            IEnumerable<Match> matches;
+            Match match;
             try
             {
-                matches = _repository.ListByChampionshipId(id);
+                match = _repository.Find(id);
             }
             catch (Exception ex)
             {
                 return InternalServerError(ex.Message);
             }
-            return Ok(matches);
+            return Ok(match);
         }
 
         [HttpGet("/match/available", Name = "Available Matches")]

@@ -22,7 +22,7 @@ namespace GarageBet.Data.Repositories
         public IEnumerable<Match> ListByChampionshipId(long id)
         {
             return _context.Matches
-                .Where(row => row.Championship.Id == id)
+                .Where(row => row.SetNavigationProperties().Championship.Id == id)
                 .ToList();
         }
 
@@ -37,7 +37,12 @@ namespace GarageBet.Data.Repositories
         #region IRepository
         public Match Find(long id)
         {
-            return _context.Matches.Find(id);
+            return _context.Matches
+               .Include("ChampionshipNavigationProperty")
+               .Include("HomeTeamNavigationProperty")
+               .Include("AwayTeamNavigationProperty")
+               .Select(entity => entity.SetNavigationProperties())
+               .Where(row => row.Id == id).First();
         }
 
         public async Task<Match> FindAsync(long id)
