@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
@@ -12,8 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
-using System.Security.Cryptography;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Identity;
 using GarageBet.Api.Models;
 
@@ -23,6 +20,7 @@ namespace GarageBet.Api.Controllers
     public class AuthenticationController : GbController
     {
         public AuthenticationController(IOptions<JwtConfiguration> jwtConfiguration, IUserRepository userRepository)
+            : base(userRepository)
         {
             JwtConfig = jwtConfiguration.Value;
             _userRepository = userRepository;
@@ -102,6 +100,15 @@ namespace GarageBet.Api.Controllers
             {
                 user.Password = HashPassword(user);
                 user.Email = user.Email.ToLower();
+
+                var emailClaim = new UserClaim
+                {
+                    ClaimType = ClaimTypes.Email,
+                    ClaimValue = user.Email
+                };
+                user.Claims = new List<UserClaim>();
+                user.Claims.Add(emailClaim);
+
                 _userRepository.Add(user);
             }
             catch (Exception ex)

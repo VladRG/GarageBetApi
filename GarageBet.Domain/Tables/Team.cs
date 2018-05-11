@@ -17,14 +17,7 @@ namespace GarageBet.Domain.Tables
         [MaxLength(50)]
         public string Country { get; set; }
 
-        private ICollection<ChampionshipTeam> ChampionshipTeams { get; } = new List<ChampionshipTeam>();
-
-        [NotMapped]
-        public IEnumerable<ChampionshipModel> Championships => ChampionshipTeams.Select(e => new ChampionshipModel
-        {
-            Id = e.Championship.Id,
-            Name = e.Championship.Name
-        });
+        public ICollection<ChampionshipTeam> ChampionshipTeams { get; set; }
 
         public ICollection<Match> HomeMatches { get; set; }
 

@@ -1,4 +1,5 @@
 ﻿using GarageBet.Data.Interfaces;
+using GarageBet.Data.Models;
 using GarageBet.Domain.Models;
 using GarageBet.Domain.Tables;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,7 @@ namespace GarageBet.Api.Controllers
     {
         private ITeamRepository _repository;
 
-        public TeamController(ITeamRepository repository)
+        public TeamController(ITeamRepository repository, IUserRepository userRepo) : base(userRepo)
         {
             _repository = repository;
         }

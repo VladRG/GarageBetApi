@@ -19,19 +19,9 @@ namespace GarageBet.Domain.Tables
 
         public ICollection<Match> Matches { get; set; }
 
-        private ICollection<ChampionshipTeam> ChampionshipTeams { get; } = new List<ChampionshipTeam>();
+        public ICollection<ChampionshipTeam> ChampionshipTeams { get; set; }
 
-        [NotMapped]
-        public List<TeamModel> Teams { get; set; }
+        public List<Team> Teams { get; set; }
 
-        public Championship SetNavigationProperties()
-        {
-            Teams = ChampionshipTeams.Select(entity => new TeamModel
-            {
-                Id = entity.Team.Id,
-                Name = entity.Team.Name
-            }).ToList();
-            return this;
-        }
     }
 }

@@ -12,9 +12,9 @@ namespace GarageBet.Api.Controllers
     {
         private IUserRepository _userRepository;
 
-        public GbController()
+        public GbController(IUserRepository repo)
         {
-
+            _userRepository = repo;
         }
 
         public IActionResult InternalServerError(string error)
@@ -27,7 +27,7 @@ namespace GarageBet.Api.Controllers
 
         protected User GetUserFromAuthorizationHeader()
         {
-            string tokenString = Request.Headers["Authorization"].ToString();
+            string tokenString = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
             JwtSecurityToken token = tokenHandler.ReadJwtToken(tokenString);
             User user;

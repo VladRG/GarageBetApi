@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using GarageBet.Data.Interfaces;
+using GarageBet.Data.Models;
 using GarageBet.Domain.Tables;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +12,7 @@ namespace GarageBet.Api.Controllers
     {
         private IMatchRepository _repository;
 
-        public MatchController(IMatchRepository repository)
+        public MatchController(IMatchRepository repository, IUserRepository userRepo) : base(userRepo)
         {
             _repository = repository;
         }
@@ -19,10 +20,12 @@ namespace GarageBet.Api.Controllers
         [HttpGet("/match", Name = "List Matches")]
         public IActionResult Index()
         {
-            IEnumerable<Match> matches;
+            IEnumerable<MatchBetModel> matches;
+            User user = GetUserFromAuthorizationHeader();
+
             try
             {
-                matches = _repository.List();
+                matches = _repository.ListMatchBets(user.Id);
             }
             catch (Exception ex)
             {

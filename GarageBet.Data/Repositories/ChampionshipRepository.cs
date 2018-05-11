@@ -32,7 +32,7 @@ namespace GarageBet.Data.Repositories
         #region IRepository
         public Championship Find(long id)
         {
-            Championship championship = _context.Championships.Find(id).SetNavigationProperties();
+            Championship championship = _context.Championships.Find(id);
             return championship;
         }
 
@@ -64,15 +64,14 @@ namespace GarageBet.Data.Repositories
         public IEnumerable<Championship> List()
         {
             return _context.Championships
-                .Include("ChampionshipTeams.Team")
-                .Select(entity => entity.SetNavigationProperties())
+                .Include(row => row.ChampionshipTeams)
                 .ToList();
         }
 
         public async Task<List<Championship>> ListAsync()
         {
             return await _context.Championships
-                .Include("ChampionshipTeams.Team")
+                .Include(row => row.ChampionshipTeams)
                 .ToListAsync();
         }
 

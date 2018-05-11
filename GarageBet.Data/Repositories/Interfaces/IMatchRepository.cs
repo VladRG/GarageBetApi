@@ -1,4 +1,5 @@
-﻿using GarageBet.Domain.Tables;
+﻿using GarageBet.Data.Models;
+using GarageBet.Domain.Tables;
 using System.Collections.Generic;
 
 namespace GarageBet.Data.Interfaces
@@ -8,5 +9,7 @@ namespace GarageBet.Data.Interfaces
         IEnumerable<Match> ListByChampionshipId(long id);
 
         IEnumerable<Match> ListAvailable();
+
+        IEnumerable<MatchBetModel> ListMatchBets(long userId);
     }
 }

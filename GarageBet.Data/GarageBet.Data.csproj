@@ -136,6 +136,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataContext.cs" />
+    <Compile Include="Models\BetModel.cs" />
+    <Compile Include="Models\ChampionshipModel.cs" />
+    <Compile Include="Models\MatchBetModel.cs" />
+    <Compile Include="Models\MatchModel.cs" />
+    <Compile Include="Models\TeamModel.cs" />
     <Compile Include="Repositories\BetRepository.cs" />
     <Compile Include="Repositories\Interfaces\IBetRepository.cs" />
     <Compile Include="Repositories\Interfaces\IMatchRepository.cs" />
@@ -148,6 +153,7 @@
     <Compile Include="Repositories\MatchRepository.cs" />
     <Compile Include="Repositories\TeamRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
+    <Compile Include="Services\BetService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">
@@ -155,9 +161,7 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="SQL\CreateMatchBetView.sql" />
   </ItemGroup>

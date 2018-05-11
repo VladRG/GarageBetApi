@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using GarageBet.Domain.Models;
+using GarageBet.Data.Models;
 
 namespace GarageBet.Data.Repositories
 {

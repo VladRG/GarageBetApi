@@ -1,4 +1,5 @@
-﻿using GarageBet.Domain.Models;
+﻿using GarageBet.Data.Models;
+using GarageBet.Domain.Models;
 using GarageBet.Domain.Tables;
 using System.Collections.Generic;
 

@@ -20,8 +20,9 @@ namespace GarageBet.Data.Repositories
         #region IUserRepository
         public User FindByEmail(string email)
         {
-            string sql = string.Format("SELECT * FROM Users WHERE Email = '{0}'", email);
-            return _context.Users.FromSql(sql).FirstOrDefault();
+            return _context.Users
+                .Include(row => row.Claims)
+                .Single(row => row.Email == email);
         }
         #endregion
 

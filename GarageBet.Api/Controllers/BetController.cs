@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using GarageBet.Data.Interfaces;
+using GarageBet.Data.Models;
 using GarageBet.Domain.Tables;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +11,7 @@ namespace GarageBet.Api.Controllers
     {
         private IBetRepository _repository;
 
-        public BetController(IBetRepository repository)
+        public BetController(IBetRepository repository, IUserRepository userRepo) : base(userRepo)
         {
             _repository = repository;
         }
@@ -18,7 +19,17 @@ namespace GarageBet.Api.Controllers
         [HttpGet("/bet", Name = "List Bets")]
         public IActionResult Index()
         {
-            return Ok();
+            IEnumerable<BetModel> bets;
+            User user = GetUserFromAuthorizationHeader();
+            try
+            {
+                bets = _repository.GetAvailable(user.Id);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex.Message);
+            }
+            return Ok(bets);
         }
 
         [HttpGet("/bet/{id}")]
@@ -33,9 +44,11 @@ namespace GarageBet.Api.Controllers
             return Ok();
         }
 
-        [HttpPost("/bet/{matchId}", Name = "Add Bet")]
-        public IActionResult Add(long matchId, Bet bet)
+        [HttpPost("/bet", Name = "Add Bet")]
+        public IActionResult Add([FromBody]Bet bet)
         {
+            User user = GetUserFromAuthorizationHeader();
+            bet.UserId = user.Id;
             try
             {
                 _repository.Add(bet);

@@ -56,17 +56,17 @@ namespace GarageBet.Data
         {
             builder.Entity<Championship>()
                .HasMany(row => row.Matches)
-               .WithOne("ChampionshipNavigationProperty")
+               .WithOne(championship => championship.Championship)
                .HasForeignKey("ChampionshipId");
 
             builder.Entity<Team>()
                 .HasMany(row => row.HomeMatches)
-                .WithOne("HomeTeamNavigationProperty")
+                .WithOne(team => team.HomeTeam)
                 .HasForeignKey("HomeTeamId");
 
             builder.Entity<Team>()
                 .HasMany(row => row.AwayMatches)
-                .WithOne("AwayTeamNavigationProperty")
+                .WithOne(team => team.AwayTeam)
                 .HasForeignKey("AwayTeamId");
         }
 
@@ -77,12 +77,12 @@ namespace GarageBet.Data
 
             builder.Entity<ChampionshipTeam>()
                    .HasOne(e => e.Team)
-                   .WithMany("ChampionshipTeams");
+                   .WithMany(row => row.ChampionshipTeams);
 
 
             builder.Entity<ChampionshipTeam>()
                 .HasOne(e => e.Championship)
-                .WithMany("ChampionshipTeams");
+                .WithMany(row => row.ChampionshipTeams);
 
         }
 

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using GarageBet.Api.Configuration;
 using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace GarageBet.Api
 {
@@ -25,6 +26,7 @@ namespace GarageBet.Api
             services.AddMvc().AddJsonOptions(options =>
             {
                 options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
         }
 

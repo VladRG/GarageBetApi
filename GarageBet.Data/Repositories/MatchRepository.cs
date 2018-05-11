@@ -1,11 +1,12 @@
 ﻿using GarageBet.Data.Interfaces;
-using GarageBet.Domain;
 using GarageBet.Domain.Tables;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System;
+using GarageBet.Data.Models;
+using GarageBet.Domain.Models;
 
 namespace GarageBet.Data.Repositories
 {
@@ -19,10 +20,42 @@ namespace GarageBet.Data.Repositories
         }
 
         #region IMatchRepository
+
+        public IEnumerable<MatchBetModel> ListMatchBets(long userId)
+        {
+            return _context.Matches
+                    .Select(row => new MatchBetModel
+                    {
+                        Match = new MatchModel
+                        {
+                            Id = row.Id,
+                            HomeTeam = new TeamModel
+                            {
+                                Id = row.HomeTeam.Id,
+                                Name = row.HomeTeam.Name
+                            },
+                            AwayTeam = new TeamModel
+                            {
+                                Id = row.AwayTeam.Id,
+                                Name = row.AwayTeam.Name
+                            }
+                        },
+                        Championship = new ChampionshipModel
+                        {
+                            Id = row.Championship.Id,
+                            CompetitiveYear = row.Championship.CompetitiveYear,
+                            Name = row.Championship.Name
+                        },
+                        HomeScore = row.HomeScore,
+                        AwayScore = row.AwayScore,
+                        BetState = GetBetState(row, userId, row.Bets.SingleOrDefault(bet => bet.UserId == userId))
+                    }).ToList();
+        }
+
         public IEnumerable<Match> ListByChampionshipId(long id)
         {
             return _context.Matches
-                .Where(row => row.SetNavigationProperties().Championship.Id == id)
+                .Where(row => row.Championship.Id == id)
                 .ToList();
         }
 
@@ -38,11 +71,10 @@ namespace GarageBet.Data.Repositories
         public Match Find(long id)
         {
             return _context.Matches
-               .Include("ChampionshipNavigationProperty")
-               .Include("HomeTeamNavigationProperty")
-               .Include("AwayTeamNavigationProperty")
-               .Select(entity => entity.SetNavigationProperties())
-               .Where(row => row.Id == id).First();
+               .Include(row => row.Championship)
+               .Include(row => row.HomeTeam)
+               .Include(row => row.AwayTeam)
+               .Single(row => row.Id == id);
         }
 
         public async Task<Match> FindAsync(long id)
@@ -67,11 +99,10 @@ namespace GarageBet.Data.Repositories
         public IEnumerable<Match> List()
         {
             return _context.Matches
-                .Include("ChampionshipNavigationProperty")
-                .Include("HomeTeamNavigationProperty")
-                .Include("AwayTeamNavigationProperty")
-                .Select(entity => entity.SetNavigationProperties())
-                .ToList();
+                 .Include(row => row.Championship)
+                 .Include(row => row.HomeTeam)
+                 .Include(row => row.AwayTeam)
+                 .ToList();
         }
 
         public async Task<List<Match>> ListAsync()
@@ -105,5 +136,35 @@ namespace GarageBet.Data.Repositories
             return entity;
         }
         #endregion
+
+        private BetState GetBetState(Match match, long userId, Bet bet)
+        {
+
+            if (match.DateTime > DateTime.Now && match.HomeScore < 0)
+            {
+                return BetState.CanBet;
+            }
+
+            if (bet == null)
+            {
+                return BetState.CanBet;
+            }
+
+
+            if (match.HomeScore == bet.HomeScore && match.AwayScore == bet.AwayScore)
+            {
+                return BetState.Won;
+            }
+
+            if (
+              (match.HomeScore < match.AwayScore && bet.HomeScore < bet.AwayScore) ||
+              (match.HomeScore > match.AwayScore && bet.HomeScore > bet.AwayScore) ||
+              (match.HomeScore == match.AwayScore && bet.HomeScore == bet.AwayScore))
+            {
+                return BetState.Result;
+            }
+
+            return BetState.NotAvailable;
+        }
     }
 }

@@ -12,7 +12,10 @@ namespace GarageBet.Api.Controllers
         private IChampionshipRepository _repository;
         private ITeamRepository _teamRepository;
 
-        public ChampionshipController(IChampionshipRepository repository, ITeamRepository teamRepository)
+        public ChampionshipController(
+            IChampionshipRepository repository,
+            ITeamRepository teamRepository,
+            IUserRepository userRepo) : base(userRepo)
         {
             _repository = repository;
             _teamRepository = teamRepository;
