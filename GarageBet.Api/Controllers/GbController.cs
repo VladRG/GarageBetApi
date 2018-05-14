@@ -1,6 +1,6 @@
 ﻿using System.Linq;
-using GarageBet.Data.Interfaces;
-using GarageBet.Domain.Tables;
+using GarageBet.Api.Repository.Interfaces;
+using GarageBet.Api.Database.Tables;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.IdentityModel.Tokens.Jwt;

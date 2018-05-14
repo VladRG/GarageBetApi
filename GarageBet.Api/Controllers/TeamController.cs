@@ -1,7 +1,6 @@
-﻿using GarageBet.Data.Interfaces;
-using GarageBet.Data.Models;
-using GarageBet.Domain.Models;
-using GarageBet.Domain.Tables;
+﻿using GarageBet.Api.Database.Tables;
+using GarageBet.Api.Models;
+using GarageBet.Api.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;

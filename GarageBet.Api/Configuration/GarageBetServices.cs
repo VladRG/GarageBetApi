@@ -1,13 +1,12 @@
-﻿using GarageBet.Domain.Configuration;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
-using GarageBet.Data.Repositories;
-using GarageBet.Data.Interfaces;
-using GarageBet.Data;
+using GarageBet.Api.Database;
+using GarageBet.Api.Repository.Interfaces;
+using GarageBet.Api.Repository.Repositories;
 
 namespace GarageBet.Api.Configuration
 {
