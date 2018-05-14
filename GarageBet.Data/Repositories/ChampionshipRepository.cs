@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Database.MM;
+using GarageBet.Data.Models;
 
 namespace GarageBet.Data.Repositories
 {
@@ -26,6 +27,40 @@ namespace GarageBet.Data.Repositories
         public Championship RemoveTeam(Championship championship, Team team)
         {
             return null;
+        }
+
+        public ChampionshipModel FindForEdit(long id)
+        {
+            return _context.Championships
+                 .Select(row => new ChampionshipModel
+                 {
+                     Id = row.Id,
+                     Name = row.Name,
+                     CompetitiveYear = row.CompetitiveYear,
+                     Teams = row.Teams.Select(team => new TeamModel
+                     {
+                         Id = team.Id,
+                         Name = team.Name
+                     }).ToList()
+
+                 }).Where(row => row.Id == id).First();
+        }
+
+        public List<ChampionshipModel> ListModels()
+        {
+            return _context.Championships
+                .Select(row => new ChampionshipModel
+                {
+                    Id = row.Id,
+                    Name = row.Name,
+                    CompetitiveYear = row.CompetitiveYear,
+                    Teams = row.ChampionshipTeams.Select(championshipTeam => new TeamModel
+                    {
+                        Id = championshipTeam.Team.Id,
+                        Name = championshipTeam.Team.Name
+                    }).ToList()
+
+                }).ToList();
         }
         #endregion
 

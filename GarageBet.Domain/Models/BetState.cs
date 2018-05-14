@@ -7,6 +7,7 @@ namespace GarageBet.Domain.Models
         Won = 1,
         Lost = 2,
         Result = 3,
-        NotAvailable = 4
+        NotAvailable = 4,
+        BetSet = 5
     }
 }

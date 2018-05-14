@@ -79,7 +79,7 @@ namespace GarageBet.Api.Controllers
         }
 
         [HttpPut("/match/{id}", Name = "Update Match")]
-        public IActionResult Update(long id, Match match)
+        public IActionResult Update(long id, [FromBody]Match match)
         {
             try
             {
@@ -106,6 +106,21 @@ namespace GarageBet.Api.Controllers
                 return InternalServerError(ex.Message);
             }
             return Ok();
+        }
+
+        [HttpGet("/match/stats/{id}")]
+        public IActionResult Stats(long id)
+        {
+            IEnumerable<MatchStats> stats;
+            try
+            {
+                stats = _repository.GetMatchStats(id);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex.Message);
+            }
+            return Ok(stats);
         }
     }
 }

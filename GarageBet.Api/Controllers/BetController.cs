@@ -19,7 +19,7 @@ namespace GarageBet.Api.Controllers
         [HttpGet("/bet", Name = "List Bets")]
         public IActionResult Index()
         {
-            IEnumerable<BetModel> bets;
+            IEnumerable<MatchBetModel> bets;
             User user = GetUserFromAuthorizationHeader();
             try
             {
@@ -90,5 +90,36 @@ namespace GarageBet.Api.Controllers
             return Ok();
         }
 
+        [HttpGet("/stats")]
+        public IActionResult Stats()
+        {
+            User user = GetUserFromAuthorizationHeader();
+            UserStats stat;
+            try
+            {
+                stat = _repository.GetUserStat(user.Id);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex.Message);
+            }
+            return Ok(stat);
+        }
+
+        [HttpGet("/leaderboard")]
+        public IActionResult Leaderboard()
+        {
+            IEnumerable<UserStats> stats;
+            try
+            {
+                stats = _repository.GetUserStats();
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex.Message);
+            }
+
+            return Ok(stats);
+        }
     }
 }

@@ -30,7 +30,8 @@ namespace GarageBet.Data.Repositories
             return _context.Teams.Select(entity => new TeamModel
             {
                 Id = entity.Id,
-                Name = entity.Name
+                Name = entity.Name,
+                Country = entity.Country
             });
         }
         #endregion

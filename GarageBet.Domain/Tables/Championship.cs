@@ -21,6 +21,7 @@ namespace GarageBet.Domain.Tables
 
         public ICollection<ChampionshipTeam> ChampionshipTeams { get; set; }
 
+        [NotMapped]
         public List<Team> Teams { get; set; }
 
     }

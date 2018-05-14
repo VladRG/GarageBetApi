@@ -11,5 +11,7 @@ namespace GarageBet.Data.Interfaces
         IEnumerable<Match> ListAvailable();
 
         IEnumerable<MatchBetModel> ListMatchBets(long userId);
+
+        IEnumerable<MatchStats> GetMatchStats(long matchId);
     }
 }

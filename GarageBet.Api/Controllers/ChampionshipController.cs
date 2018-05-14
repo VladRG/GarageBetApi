@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using GarageBet.Data.Interfaces;
+using GarageBet.Data.Models;
 using GarageBet.Domain.Tables;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,11 +25,11 @@ namespace GarageBet.Api.Controllers
         [HttpGet("/championship")]
         public IActionResult Index()
         {
-            IEnumerable<Championship> championships;
+            IEnumerable<ChampionshipModel> championships;
             try
             {
 
-                championships = _repository.List();
+                championships = _repository.ListModels();
             }
             catch (Exception ex)
             {
@@ -40,10 +41,10 @@ namespace GarageBet.Api.Controllers
         [HttpGet("/championship/{id}", Name = "Championship Details")]
         public IActionResult Find(long id)
         {
-            Championship championship;
+            ChampionshipModel championship;
             try
             {
-                championship = _repository.Find(id);
+                championship = _repository.FindForEdit(id);
             }
             catch (Exception ex)
             {

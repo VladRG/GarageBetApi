@@ -140,7 +140,10 @@
     <Compile Include="Models\ChampionshipModel.cs" />
     <Compile Include="Models\MatchBetModel.cs" />
     <Compile Include="Models\MatchModel.cs" />
+    <Compile Include="Models\MatchStats.cs" />
     <Compile Include="Models\TeamModel.cs" />
+    <Compile Include="Models\UserModel.cs" />
+    <Compile Include="Models\UserStats.cs" />
     <Compile Include="Repositories\BetRepository.cs" />
     <Compile Include="Repositories\Interfaces\IBetRepository.cs" />
     <Compile Include="Repositories\Interfaces\IMatchRepository.cs" />

@@ -20,7 +20,6 @@ namespace GarageBet.Data.Repositories
         }
 
         #region IMatchRepository
-
         public IEnumerable<MatchBetModel> ListMatchBets(long userId)
         {
             return _context.Matches
@@ -29,16 +28,21 @@ namespace GarageBet.Data.Repositories
                         Match = new MatchModel
                         {
                             Id = row.Id,
+                            DateTime = row.DateTime,
                             HomeTeam = new TeamModel
                             {
                                 Id = row.HomeTeam.Id,
-                                Name = row.HomeTeam.Name
+                                Name = row.HomeTeam.Name,
+                                Country = row.HomeTeam.Country
                             },
                             AwayTeam = new TeamModel
                             {
                                 Id = row.AwayTeam.Id,
-                                Name = row.AwayTeam.Name
-                            }
+                                Name = row.AwayTeam.Name,
+                                Country = row.AwayTeam.Country
+                            },
+                            HomeScore = row.HomeScore,
+                            AwayScore = row.AwayScore,
                         },
                         Championship = new ChampionshipModel
                         {
@@ -46,10 +50,14 @@ namespace GarageBet.Data.Repositories
                             CompetitiveYear = row.Championship.CompetitiveYear,
                             Name = row.Championship.Name
                         },
-                        HomeScore = row.HomeScore,
-                        AwayScore = row.AwayScore,
-                        BetState = GetBetState(row, userId, row.Bets.SingleOrDefault(bet => bet.UserId == userId))
-                    }).ToList();
+
+                        BetState = GetBetState(row, userId, row.Bets.FirstOrDefault(bet => bet.UserId == userId)),
+                        Bet = new BetModel
+                        {
+                            HomeScore = row.Bets.FirstOrDefault(bet => bet.UserId == userId).HomeScore,
+                            AwayScore = row.Bets.FirstOrDefault(bet => bet.UserId == userId).AwayScore
+                        }
+                    }).OrderBy(t => t.Match.DateTime).ToList();
         }
 
         public IEnumerable<Match> ListByChampionshipId(long id)
@@ -64,6 +72,33 @@ namespace GarageBet.Data.Repositories
             return _context.Matches
                 .Where(match => match.DateTime < DateTime.Now)
                 .ToList();
+        }
+
+        public IEnumerable<MatchStats> GetMatchStats(long matchId)
+        {
+            List<MatchStats> stats = new List<MatchStats>();
+            var bets = _context.Bets
+                .Include(row => row.Match)
+                .Include(row => row.User)
+                .Where(row => row.MatchId == matchId).ToList();
+
+            foreach (var item in bets)
+            {
+                stats.Add(new MatchStats
+                {
+                    HomeScore = item.HomeScore,
+                    AwayScore = item.AwayScore,
+                    User = new UserModel
+                    {
+                        Email = item.User.Email,
+                        FirstName = item.User.FirstName,
+                        LastName = item.User.LastName
+                    },
+                    BetState = GetBetState(item.Match, item.User.Id, item)
+                });
+            };
+
+            return stats;
         }
         #endregion
 
@@ -124,7 +159,10 @@ namespace GarageBet.Data.Repositories
 
         public Match Update(Match entity)
         {
-            _context.Matches.Remove(entity);
+            Match match = _context.Matches.Find(entity.Id);
+            match.HomeScore = entity.HomeScore;
+            match.AwayScore = entity.AwayScore;
+            _context.Matches.Update(match);
             _context.SaveChanges();
             return entity;
         }
@@ -137,19 +175,32 @@ namespace GarageBet.Data.Repositories
         }
         #endregion
 
+        private BetModel GetBetModel(Match match, long userId)
+        {
+            Bet bet = match.Bets.FirstOrDefault(b => b.UserId == userId);
+            if (bet == null)
+            {
+                return null;
+            }
+            return new BetModel
+            {
+                HomeScore = bet.HomeScore,
+                AwayScore = bet.AwayScore
+            };
+        }
+
         private BetState GetBetState(Match match, long userId, Bet bet)
         {
 
-            if (match.DateTime > DateTime.Now && match.HomeScore < 0)
+            if (match.DateTime > DateTime.Now && match.HomeScore < 0 && bet == null)
             {
                 return BetState.CanBet;
             }
 
             if (bet == null)
             {
-                return BetState.CanBet;
+                return BetState.NotAvailable;
             }
-
 
             if (match.HomeScore == bet.HomeScore && match.AwayScore == bet.AwayScore)
             {
@@ -163,8 +214,10 @@ namespace GarageBet.Data.Repositories
             {
                 return BetState.Result;
             }
-
-            return BetState.NotAvailable;
+            else
+            {
+                return BetState.Lost;
+            }
         }
     }
 }

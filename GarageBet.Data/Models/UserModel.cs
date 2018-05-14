@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace GarageBet.Data.Models
 {
-    public class TeamModel
+    public class UserModel
     {
-        public long Id { get; set; }
+        public string Email { get; set; }
 
-        public string Name { get; set; }
+        public string FirstName { get; set; }
 
-        public string Country { get; set; }
+        public string LastName { get; set; }
     }
 }

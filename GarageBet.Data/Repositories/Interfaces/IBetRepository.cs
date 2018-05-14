@@ -6,10 +6,14 @@ namespace GarageBet.Data.Interfaces
 {
     public interface IBetRepository : IRepository<Bet>
     {
-        BetModel GetModelForMatch(long matchId);
+        BetFormModel GetModelForMatch(long matchId);
 
-        BetModel GetModelForEdit(long betId);
+        BetFormModel GetModelForEdit(long betId);
 
-        IEnumerable<BetModel> GetAvailable(long userId);
+        IEnumerable<MatchBetModel> GetAvailable(long userId);
+
+        UserStats GetUserStat(long userId);
+
+        IEnumerable<UserStats> GetUserStats();
     }
 }

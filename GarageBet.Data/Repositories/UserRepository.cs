@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using System;
 
 namespace GarageBet.Data.Repositories
 {
@@ -20,9 +21,18 @@ namespace GarageBet.Data.Repositories
         #region IUserRepository
         public User FindByEmail(string email)
         {
-            return _context.Users
-                .Include(row => row.Claims)
-                .Single(row => row.Email == email);
+            User user = null;
+            try
+            {
+                user = _context.Users
+                      .Include(row => row.Claims)
+                      .Single(row => row.Email == email);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            return user;
         }
         #endregion
 

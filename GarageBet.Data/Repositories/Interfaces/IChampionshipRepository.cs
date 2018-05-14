@@ -1,4 +1,6 @@
-﻿using GarageBet.Domain.Tables;
+﻿using GarageBet.Data.Models;
+using GarageBet.Domain.Tables;
+using System.Collections.Generic;
 
 namespace GarageBet.Data.Interfaces
 {
@@ -7,5 +9,9 @@ namespace GarageBet.Data.Interfaces
         Championship AddTeam(Championship championship, Team team);
 
         Championship RemoveTeam(Championship championship, Team team);
+
+        ChampionshipModel FindForEdit(long id);
+
+        List<ChampionshipModel> ListModels();
     }
 }

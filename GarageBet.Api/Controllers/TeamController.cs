@@ -21,10 +21,10 @@ namespace GarageBet.Api.Controllers
         [HttpGet("/team", Name = "List Teams")]
         public IActionResult Index()
         {
-            IEnumerable<Team> teams;
+            IEnumerable<TeamModel> teams;
             try
             {
-                teams = _repository.List();
+                teams = _repository.ListModels();
             }
             catch (Exception ex)
             {

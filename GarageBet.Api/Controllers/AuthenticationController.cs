@@ -90,14 +90,13 @@ namespace GarageBet.Api.Controllers
         [HttpPost("/register")]
         public IActionResult Register([FromBody] User user)
         {
-            User existingUser = _userRepository.FindByEmail(user.Email);
-            if (existingUser != null)
-            {
-                return StatusCode((int)HttpStatusCode.Conflict);
-            }
-
             try
             {
+                User existingUser = _userRepository.FindByEmail(user.Email);
+                if (existingUser != null)
+                {
+                    return StatusCode((int)HttpStatusCode.Conflict);
+                }
                 user.Password = HashPassword(user);
                 user.Email = user.Email.ToLower();
 
