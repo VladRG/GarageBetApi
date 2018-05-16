@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using GarageBet.Api.Database;
 using GarageBet.Api.Repository.Interfaces;
 using GarageBet.Api.Repository.Repositories;
+using System;
 
 namespace GarageBet.Api.Configuration
 {
@@ -48,7 +49,7 @@ namespace GarageBet.Api.Configuration
             services.Configure<DomainConfiguration>(Configuration.GetSection("Database"));
             services.AddDbContext<DataContext>(options =>
             {
-                options.UseMySql(Configuration.GetSection("Domain")["ConnectionString"], config =>
+                options.UseMySql(Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb"), config =>
                 {
                     config.MigrationsAssembly("GarageBet.Api");
                 });
