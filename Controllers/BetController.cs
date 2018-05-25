@@ -55,7 +55,7 @@ namespace GarageBet.Api.Controllers
         }
 
         [HttpPut("/bet/{id}")]
-        public IActionResult Update(long id, Bet bet)
+        public IActionResult Update(long id, [FromBody]Bet bet)
         {
             try
             {

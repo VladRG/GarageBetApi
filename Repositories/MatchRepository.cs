@@ -35,13 +35,13 @@ namespace GarageBet.Api.Repository.Repositories
                 result.Add(new MatchBetModel
                 {
                     MatchId = match.Id,
-                    BetId = bet.Id,
+                    BetId = bet != null ? bet.Id : 0,
                     ChampionshipId = match.Championship.Id,
                     HomeTeamName = match.HomeTeam.Name,
                     AwayTeamName = match.AwayTeam.Name,
                     DateTime = match.DateTime,
-                    HomeBet = bet.HomeScore,
-                    AwayBet = bet.AwayScore,
+                    HomeBet = bet != null ? bet.HomeScore : -1,
+                    AwayBet = bet != null ? bet.AwayScore : -1,
                     HomeScore = match.HomeScore,
                     AwayScore = match.AwayScore,
                     ChampionshipName = match.Championship.Name,
@@ -115,7 +115,10 @@ namespace GarageBet.Api.Repository.Repositories
                    {
                        AwayTeamName = row.Match.AwayTeam.Name,
                        HomeTeamName = row.Match.HomeTeam.Name,
-                       MatchId = row.Match.Id
+                       HomeBet = row.HomeScore,
+                       AwayBet = row.AwayScore,
+                       MatchId = row.Match.Id,
+                       BetId = betId
                    }).Single();
         }
 
