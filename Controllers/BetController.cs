@@ -32,12 +32,6 @@ namespace GarageBet.Api.Controllers
             return Ok(bets);
         }
 
-        [HttpGet("/bet/{id}")]
-        public IActionResult FindByUser(long id)
-        {
-            return Ok();
-        }
-
         [HttpGet("/bet/history", Name = "List Bet History")]
         public IActionResult GetBetHistory()
         {

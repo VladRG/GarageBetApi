@@ -22,136 +22,94 @@ namespace GarageBet.Api.Repository.Repositories
         #region IBetRepository
         public BetFormModel GetModelForMatch(long matchId)
         {
-            return _context.Matches
-                .Select(row => new BetFormModel
-                {
-                    Match = new MatchModel
-                    {
-                        Id = row.Id,
-                        HomeTeam = new TeamModel
-                        {
-                            Id = row.HomeTeam.Id,
-                            Name = row.HomeTeam.Name
-                        },
-                        AwayTeam = new TeamModel
-                        {
-                            Id = row.AwayTeam.Id,
-                            Name = row.AwayTeam.Name
-                        }
-                    },
-                    Championship = new ChampionshipModel
-                    {
-                        Id = row.Championship.Id,
-                        CompetitiveYear = row.Championship.CompetitiveYear,
-                        Name = row.Championship.Name
-                    }
-                })
-                .Single(row => row.Match.Id == matchId);
+            var match = _context.Matches.Single(row => row.Id == matchId);
+            var result = new BetFormModel
+            {
+                
+            };
+            return result;
         }
 
         public BetFormModel GetModelForEdit(long betId)
         {
-            return _context.Bets
-                .Select(row => new BetFormModel
-                {
-                    Match = new MatchModel
-                    {
-                        Id = row.Id,
-                        HomeTeam = new TeamModel
-                        {
-                            Id = row.Match.HomeTeam.Id,
-                            Name = row.Match.HomeTeam.Name
-                        },
-                        AwayTeam = new TeamModel
-                        {
-                            Id = row.Match.AwayTeam.Id,
-                            Name = row.Match.AwayTeam.Name
-                        }
-                    },
-                    Championship = new ChampionshipModel
-                    {
-                        Id = row.Match.Championship.Id,
-                        Name = row.Match.Championship.Name,
-                        CompetitiveYear = row.Match.Championship.CompetitiveYear
-                    },
-                    HomeScore = row.HomeScore,
-                    AwayScore = row.AwayScore,
-                }).Single(row => row.Id == betId);
+            var bet = _context.Bets.Single(row => row.Id == betId);
+
+            var result = new BetFormModel
+            {
+                AwayBet = bet.AwayScore,
+                AwayScore = bet.Match.AwayScore,
+                AwayTeamName = bet.Match.AwayTeam.Name,
+                BetId = bet.Id,
+                HomeBet = bet.HomeScore,
+                HomeScore = bet.Match.HomeScore,
+                HomeTeamName = bet.Match.HomeTeam.Name,
+                MatchId = bet.Match.Id,
+                UserId = bet.User.Id
+            };
+            return result;
         }
 
         public IEnumerable<MatchBetModel> GetAvailable(long userId)
         {
-            return _context.Matches
+            var matches = _context.Matches
                  .Where(row =>
                      row.Bets.Where(bet => bet.UserId == userId).Count() == 0 &&
                      row.DateTime > DateTime.Now
-                  )
-                 .Select(row => new MatchBetModel
-                 {
-                     Match = new MatchModel
-                     {
-                         Id = row.Id,
-                         HomeTeam = new TeamModel
-                         {
-                             Id = row.HomeTeam.Id,
-                             Name = row.HomeTeam.Name
-                         },
-                         AwayTeam = new TeamModel
-                         {
-                             Id = row.AwayTeam.Id,
-                             Name = row.AwayTeam.Name
-                         },
-                         DateTime = row.DateTime,
-                     },
-                     BetState = GetBetState(row, userId, row.Bets.FirstOrDefault(bet => bet.UserId == userId)),
-                     Bet = new BetModel
-                     {
-                         HomeScore = row.Bets.First(bet => bet.UserId == userId).HomeScore,
-                         AwayScore = row.Bets.First(bet => bet.UserId == userId).AwayScore
-                     },
-                     Championship = new ChampionshipModel
-                     {
-                         Id = row.Championship.Id,
-                         CompetitiveYear = row.Championship.CompetitiveYear,
-                         Name = row.Championship.Name
-                     }
-                 }).ToList();
+                  ).Include(row => row.Bets)
+                  .Include(row => row.HomeTeam)
+                  .Include(row => row.AwayTeam).ToList();
+
+            var result = new List<MatchBetModel>();
+            foreach (var match in matches)
+            {
+                var bet = match.Bets.FirstOrDefault(b => b.UserId == userId);
+                result.Add(new MatchBetModel
+                {
+                    MatchId = match.Id,
+                    BetId = bet.Id,
+                    HomeTeamName = match.HomeTeam.Name,
+                    AwayTeamName = match.AwayTeam.Name,
+                    DateTime = match.DateTime,
+                    HomeBet = bet.HomeScore,
+                    AwayBet = bet.AwayScore,
+                    HomeScore = match.HomeScore,
+                    AwayScore = match.AwayScore,
+                    ChampionshipName = match.Championship.Name,
+                    CompetitiveYear = match.Championship.CompetitiveYear,
+                    BetState = GetBetState(match, userId, bet)
+                });
+            }
+            return result;
         }
 
         public IEnumerable<BetFormModel> GetActiveBets(long userId)
         {
-            return _context.Matches
+            var matches = _context.Matches
                  .Where(row =>
                      row.Bets.Where(bet =>
                         bet.UserId == userId &&
                         row.HomeScore > -1
                      ).ToList().Count == 0
-                  )
-                 .Select(row => new BetFormModel
-                 {
-                     Match = new MatchModel
-                     {
-                         Id = row.Id,
-                         HomeTeam = new TeamModel
-                         {
-                             Id = row.HomeTeam.Id,
-                             Name = row.HomeTeam.Name,
-                             Country = row.HomeTeam.Country
-                         },
-                         AwayTeam = new TeamModel
-                         {
-                             Id = row.AwayTeam.Id,
-                             Name = row.AwayTeam.Name,
-                             Country = row.AwayTeam.Country
-                         }
-                     },
-                     Championship = new ChampionshipModel
-                     {
-                         Id = row.Championship.Id,
-                         CompetitiveYear = row.Championship.CompetitiveYear,
-                         Name = row.Championship.Name
-                     }
-                 });
+                  ).ToList();
+
+            var result = new List<BetFormModel>();
+            foreach (var match in matches)
+            {
+                var bet = match.Bets.Where(b => b.UserId == userId).First();
+                result.Add(new BetFormModel
+                {
+                    AwayBet = bet.AwayScore,
+                    AwayScore = match.AwayScore,
+                    AwayTeamName = match.AwayTeam.Name,
+                    HomeTeamName = match.HomeTeam.Name,
+                    BetId = bet != null ? bet.Id : 0,
+                    HomeBet = bet.HomeScore,
+                    HomeScore = match.HomeScore,
+                    MatchId = match.Id,
+                    UserId = userId
+                });
+            }
+            return result;
         }
 
         public UserStats GetUserStat(long userId)
@@ -267,7 +225,7 @@ namespace GarageBet.Api.Repository.Repositories
                 return BetState.CanBet;
             }
 
-            if (bet == null)
+            if (bet == null && match.DateTime > DateTime.Now && match.HomeScore < 0)
             {
                 return BetState.CanBet;
             }

@@ -22,42 +22,34 @@ namespace GarageBet.Api.Repository.Repositories
         #region IMatchRepository
         public IEnumerable<MatchBetModel> ListMatchBets(long userId)
         {
-            return _context.Matches
-                    .Select(row => new MatchBetModel
-                    {
-                        Match = new MatchModel
-                        {
-                            Id = row.Id,
-                            DateTime = row.DateTime,
-                            HomeTeam = new TeamModel
-                            {
-                                Id = row.HomeTeam.Id,
-                                Name = row.HomeTeam.Name,
-                                Country = row.HomeTeam.Country
-                            },
-                            AwayTeam = new TeamModel
-                            {
-                                Id = row.AwayTeam.Id,
-                                Name = row.AwayTeam.Name,
-                                Country = row.AwayTeam.Country
-                            },
-                            HomeScore = row.HomeScore,
-                            AwayScore = row.AwayScore,
-                        },
-                        Championship = new ChampionshipModel
-                        {
-                            Id = row.Championship.Id,
-                            CompetitiveYear = row.Championship.CompetitiveYear,
-                            Name = row.Championship.Name
-                        },
+            var matches = _context.Matches
+                .Include(row => row.HomeTeam)
+                .Include(row => row.AwayTeam)
+                .Include(row => row.Bets)
+                .Include(row => row.Championship).ToList();
 
-                        BetState = GetBetState(row, userId, row.Bets.FirstOrDefault(bet => bet.UserId == userId)),
-                        Bet = new BetModel
-                        {
-                            HomeScore = row.Bets.FirstOrDefault(bet => bet.UserId == userId).HomeScore,
-                            AwayScore = row.Bets.FirstOrDefault(bet => bet.UserId == userId).AwayScore
-                        }
-                    }).OrderBy(t => t.Match.DateTime).ToList();
+            var result = new List<MatchBetModel>();
+            foreach (var match in matches)
+            {
+                var bet = match.Bets.FirstOrDefault(b => b.UserId == userId);
+                result.Add(new MatchBetModel
+                {
+                    MatchId = match.Id,
+                    BetId = bet.Id,
+                    ChampionshipId = match.Championship.Id,
+                    HomeTeamName = match.HomeTeam.Name,
+                    AwayTeamName = match.AwayTeam.Name,
+                    DateTime = match.DateTime,
+                    HomeBet = bet.HomeScore,
+                    AwayBet = bet.AwayScore,
+                    HomeScore = match.HomeScore,
+                    AwayScore = match.AwayScore,
+                    ChampionshipName = match.Championship.Name,
+                    CompetitiveYear = match.Championship.CompetitiveYear,
+                    BetState = GetBetState(match, userId, bet)
+                });
+            }
+            return result.OrderBy(t => t.DateTime).ToList();
         }
 
         public IEnumerable<Match> ListByChampionshipId(long id)
@@ -65,6 +57,21 @@ namespace GarageBet.Api.Repository.Repositories
             return _context.Matches
                 .Where(row => row.Championship.Id == id)
                 .ToList();
+        }
+
+        public MatchModel FindForBet(long betId)
+        {
+            return _context.Matches.Select(match => new MatchModel
+            {
+                AwayScore = match.AwayScore,
+                HomeScore = match.HomeScore,
+                AwayTeamName = match.AwayTeam.Name,
+                HomeTeamName = match.HomeTeam.Name,
+                ChampionshipName = match.Championship.Name,
+                DateTime = match.DateTime,
+                CompetitiveYear = match.Championship.CompetitiveYear,
+                Id = match.Id
+            }).FirstOrDefault();
         }
 
         public IEnumerable<Match> ListAvailable()
@@ -99,6 +106,28 @@ namespace GarageBet.Api.Repository.Repositories
             };
 
             return stats;
+        }
+
+        public MatchEditBetForm GetMatchModelForEditBet(long betId)
+        {
+            return _context.Bets.Where(bet => bet.Id == betId)
+                   .Select(row => new MatchEditBetForm
+                   {
+                       AwayTeamName = row.Match.AwayTeam.Name,
+                       HomeTeamName = row.Match.HomeTeam.Name,
+                       MatchId = row.Match.Id
+                   }).Single();
+        }
+
+        public MatchNewBetForm GetMatchModelForNewBet(long matchId)
+        {
+            return _context.Matches.Where(match => match.Id == matchId)
+               .Select(row => new MatchNewBetForm
+               {
+                   AwayTeamName = row.AwayTeam.Name,
+                   HomeTeamName = row.HomeTeam.Name,
+                   MatchId = row.Id
+               }).Single();
         }
         #endregion
 
@@ -192,12 +221,17 @@ namespace GarageBet.Api.Repository.Repositories
         private BetState GetBetState(Match match, long userId, Bet bet)
         {
 
-            if (match.DateTime > DateTime.Now && match.HomeScore < 0 && bet == null)
+            if (match.DateTime > DateTime.Now)
             {
                 return BetState.CanBet;
             }
 
-            if (bet == null)
+            if (match.DateTime < DateTime.Now && bet == null)
+            {
+                return BetState.NotAvailable;
+            }
+
+            if (DateTime.Now < match.DateTime.AddHours(2) && DateTime.Now > match.DateTime)
             {
                 return BetState.NotAvailable;
             }

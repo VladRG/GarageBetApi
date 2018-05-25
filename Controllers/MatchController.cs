@@ -49,6 +49,52 @@ namespace GarageBet.Api.Controllers
             return Ok(match);
         }
 
+        [HttpGet("/match/edit-bet/{id}")]
+        public IActionResult GetMatchModelForEditBet(long id)
+        {
+            MatchEditBetForm response = null;
+            try
+            {
+                response = _repository.GetMatchModelForEditBet(id);
+            }
+            catch (Exception ex)
+            {
+                InternalServerError(ex.Message);
+            }
+            return Ok(response);
+        }
+
+        [HttpGet("/match/new-bet/{id}")]
+        public IActionResult GetMatchModelForNewBet(long id)
+        {
+            MatchNewBetForm response = null;
+            try
+            {
+                response = _repository.GetMatchModelForNewBet(id);
+            }
+            catch (Exception ex)
+            {
+                InternalServerError(ex.Message);
+            }
+            return Ok(response);
+        }
+
+
+        [HttpGet("/match/bet/{betId}")]
+        public IActionResult FindForBet(long betId)
+        {
+            MatchModel match;
+            try
+            {
+                match = _repository.FindForBet(betId);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex.Message);
+            }
+            return Ok(match);
+        }
+
         [HttpGet("/match/available", Name = "Available Matches")]
         public IActionResult GetAvailableMatches()
         {

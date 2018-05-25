@@ -13,5 +13,11 @@ namespace GarageBet.Api.Repository.Interfaces
         IEnumerable<MatchBetModel> ListMatchBets(long userId);
 
         IEnumerable<MatchStats> GetMatchStats(long matchId);
+
+        MatchModel FindForBet(long betId);
+
+        MatchEditBetForm GetMatchModelForEditBet(long betId);
+
+        MatchNewBetForm GetMatchModelForNewBet(long matchId);
     }
 }

@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GarageBet.Api.Models
 {
-    public class MatchModel
+    public class BetFormModel
     {
-        public long Id { get; set; }
+        public long BetId { get; set; }
+
+        public long MatchId { get; set; }
+
+        public long UserId { get; set; }
 
         public int HomeScore { get; set; }
 
@@ -18,10 +21,9 @@ namespace GarageBet.Api.Models
 
         public string AwayTeamName { get; set; }
 
-        public string ChampionshipName { get; set; }
+        public int HomeBet { get; set; }
 
-        public string CompetitiveYear { get; set; }
+        public int AwayBet { get; set; }
 
-        public DateTime DateTime { get; set; }
     }
 }
