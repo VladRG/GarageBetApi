@@ -106,8 +106,8 @@ namespace GarageBet.Api.Repository.Repositories
                      BetState = GetBetState(row, userId, row.Bets.FirstOrDefault(bet => bet.UserId == userId)),
                      Bet = new BetModel
                      {
-                         HomeScore = row.Bets.FirstOrDefault(bet => bet.UserId == userId).HomeScore,
-                         AwayScore = row.Bets.FirstOrDefault(bet => bet.UserId == userId).AwayScore
+                         HomeScore = row.Bets.First(bet => bet.UserId == userId).HomeScore,
+                         AwayScore = row.Bets.First(bet => bet.UserId == userId).AwayScore
                      },
                      Championship = new ChampionshipModel
                      {
@@ -192,7 +192,7 @@ namespace GarageBet.Api.Repository.Repositories
             {
                 stats.Add(GetUserStat(user.Id));
             }
-            stats.OrderBy(row => (row.Won * 3) + row.Lost);
+            stats = stats.OrderByDescending(row => (row.Won * 3) + row.Result).ToList();
             return stats;
         }
         #endregion
