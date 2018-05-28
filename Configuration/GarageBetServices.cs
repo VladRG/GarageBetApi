@@ -49,7 +49,8 @@ namespace GarageBet.Api.Configuration
             services.Configure<DomainConfiguration>(Configuration.GetSection("Database"));
             services.AddDbContext<DataContext>(options =>
             {
-                options.UseMySql(Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb"), config =>
+                //options.UseMySql(Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb"), config =>
+                options.UseMySql(Configuration.GetSection("Domain")["ConnectionString"], config =>
                 {
                     config.MigrationsAssembly("GarageBet.Api");
                 });

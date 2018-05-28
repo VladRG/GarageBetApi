@@ -35,6 +35,12 @@ namespace GarageBet.Api.Controllers
             return Ok(_userRepository.List());
         }
 
+        [HttpGet("/date-time")]
+        public IActionResult GetServerTime()
+        {
+            return Ok(DateTime.Now);
+        }
+
         [AllowAnonymous]
         [HttpPost("/login")]
         public IActionResult Login([FromBody]User user)

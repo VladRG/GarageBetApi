@@ -34,6 +34,41 @@ namespace GarageBet.Api.Controllers
             return Ok(matches);
         }
 
+        [HttpGet("/match/championship/{championshipId}")]
+        public IActionResult GetForChampionship(long championshipId)
+        {
+            IEnumerable<MatchBetModel> matches;
+            User user = GetUserFromAuthorizationHeader();
+
+            try
+            {
+                matches = _repository.GetForChampionship(championshipId, user.Id);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex.Message);
+            }
+            return Ok(matches);
+        }
+
+        [HttpGet("/match/today")]
+        public IActionResult GetForToday()
+        {
+            IEnumerable<MatchBetModel> matches;
+            User user = GetUserFromAuthorizationHeader();
+
+            try
+            {
+                matches = _repository.GetForToday(user.Id);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex.Message);
+            }
+            return Ok(matches);
+        }
+
+
         [HttpGet("/match/{id}", Name = "Match details")]
         public IActionResult ListByChampionship(long id)
         {

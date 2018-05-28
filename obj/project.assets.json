@@ -12914,23 +12914,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\vladg\\.nuget\\packages\\": {},
+    "C:\\Users\\Vlad Gheorghita\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\vladg\\Documents\\Development\\vladg\\GarageBetApi\\GarageBet.Api.csproj",
+      "projectUniqueName": "C:\\Users\\Vlad Gheorghita\\Documents\\Development\\Garagebet\\GarageBetApi\\GarageBet.Api.csproj",
       "projectName": "GarageBet.Api",
-      "projectPath": "C:\\Users\\vladg\\Documents\\Development\\vladg\\GarageBetApi\\GarageBet.Api.csproj",
-      "packagesPath": "C:\\Users\\vladg\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\vladg\\Documents\\Development\\vladg\\GarageBetApi\\obj\\",
+      "projectPath": "C:\\Users\\Vlad Gheorghita\\Documents\\Development\\Garagebet\\GarageBetApi\\GarageBet.Api.csproj",
+      "packagesPath": "C:\\Users\\Vlad Gheorghita\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Vlad Gheorghita\\Documents\\Development\\Garagebet\\GarageBetApi\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\vladg\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Vlad Gheorghita\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [

@@ -57,6 +57,8 @@ namespace GarageBet.Api.Controllers
         [HttpPut("/bet/{id}")]
         public IActionResult Update(long id, [FromBody]Bet bet)
         {
+            User user = GetUserFromAuthorizationHeader();
+            bet.UserId = user.Id;
             try
             {
                 _repository.Update(bet);

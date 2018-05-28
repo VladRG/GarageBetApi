@@ -28,28 +28,31 @@ namespace GarageBet.Api.Repository.Repositories
                 .Include(row => row.Bets)
                 .Include(row => row.Championship).ToList();
 
-            var result = new List<MatchBetModel>();
-            foreach (var match in matches)
-            {
-                var bet = match.Bets.FirstOrDefault(b => b.UserId == userId);
-                result.Add(new MatchBetModel
-                {
-                    MatchId = match.Id,
-                    BetId = bet != null ? bet.Id : 0,
-                    ChampionshipId = match.Championship.Id,
-                    HomeTeamName = match.HomeTeam.Name,
-                    AwayTeamName = match.AwayTeam.Name,
-                    DateTime = match.DateTime,
-                    HomeBet = bet != null ? bet.HomeScore : -1,
-                    AwayBet = bet != null ? bet.AwayScore : -1,
-                    HomeScore = match.HomeScore,
-                    AwayScore = match.AwayScore,
-                    ChampionshipName = match.Championship.Name,
-                    CompetitiveYear = match.Championship.CompetitiveYear,
-                    BetState = GetBetState(match, userId, bet)
-                });
-            }
-            return result.OrderBy(t => t.DateTime).ToList();
+            return ConvertMatchToMatchBetModel(matches, userId);
+        }
+
+        public IEnumerable<MatchBetModel> GetForChampionship(long championshipId, long userId)
+        {
+            var matches = _context.Matches
+                .Include(row => row.HomeTeam)
+                .Include(row => row.AwayTeam)
+                .Include(row => row.Bets)
+                .Include(row => row.Championship)
+                .Where(row => row.Championship.Id == championshipId).ToList();
+
+            return ConvertMatchToMatchBetModel(matches, userId);
+        }
+
+        public IEnumerable<MatchBetModel> GetForToday(long userId)
+        {
+            var matches = _context.Matches
+               .Include(row => row.HomeTeam)
+               .Include(row => row.AwayTeam)
+               .Include(row => row.Bets)
+               .Include(row => row.Championship)
+               .Where(row => row.DateTime.Date == DateTime.Now.Date).ToList();
+
+            return ConvertMatchToMatchBetModel(matches, userId);
         }
 
         public IEnumerable<Match> ListByChampionshipId(long id)
@@ -224,17 +227,17 @@ namespace GarageBet.Api.Repository.Repositories
         private BetState GetBetState(Match match, long userId, Bet bet)
         {
 
-            if (match.DateTime > DateTime.Now)
+            if (match.DateTime > DateTime.UtcNow)
             {
                 return BetState.CanBet;
             }
 
-            if (match.DateTime < DateTime.Now && bet == null)
+            if (match.DateTime < DateTime.UtcNow && bet == null)
             {
                 return BetState.NotAvailable;
             }
 
-            if (DateTime.Now < match.DateTime.AddHours(2) && DateTime.Now > match.DateTime)
+            if (DateTime.UtcNow < match.DateTime.AddHours(2) && DateTime.UtcNow > match.DateTime)
             {
                 return BetState.NotAvailable;
             }
@@ -255,6 +258,33 @@ namespace GarageBet.Api.Repository.Repositories
             {
                 return BetState.Lost;
             }
+        }
+
+        private IEnumerable<MatchBetModel> ConvertMatchToMatchBetModel(IEnumerable<Match> matches, long userId)
+        {
+            var result = new List<MatchBetModel>();
+            foreach (var match in matches)
+            {
+                var bet = match.Bets.FirstOrDefault(b => b.UserId == userId);
+                result.Add(new MatchBetModel
+                {
+                    MatchId = match.Id,
+                    BetId = bet != null ? bet.Id : 0,
+                    ChampionshipId = match.Championship.Id,
+                    HomeTeamName = match.HomeTeam.Name,
+                    AwayTeamName = match.AwayTeam.Name,
+                    DateTime = match.DateTime,
+                    HomeBet = bet != null ? bet.HomeScore : -1,
+                    AwayBet = bet != null ? bet.AwayScore : -1,
+                    HomeScore = match.HomeScore,
+                    AwayScore = match.AwayScore,
+                    ChampionshipName = match.Championship.Name,
+                    CompetitiveYear = match.Championship.CompetitiveYear,
+                    BetState = GetBetState(match, userId, bet),
+                    Standing = match.Standing
+                });
+            }
+            return result.OrderBy(t => t.DateTime).ToList();
         }
     }
 }

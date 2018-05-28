@@ -19,3 +19,14 @@ C:\Users\vladg\Documents\Development\vladg\GarageBetApi\obj\Debug\netcoreapp2.0\
 C:\Users\vladg\Documents\Development\vladg\GarageBetApi\obj\Debug\netcoreapp2.0\GarageBet.Api.AssemblyInfo.cs
 C:\Users\vladg\Documents\Development\vladg\GarageBetApi\obj\Debug\netcoreapp2.0\GarageBet.Api.dll
 C:\Users\vladg\Documents\Development\vladg\GarageBetApi\obj\Debug\netcoreapp2.0\GarageBet.Api.pdb
+C:\Users\Vlad Gheorghita\Documents\Development\Garagebet\GarageBetApi\bin\Debug\netcoreapp2.0\GarageBet.Api.deps.json
+C:\Users\Vlad Gheorghita\Documents\Development\Garagebet\GarageBetApi\bin\Debug\netcoreapp2.0\GarageBet.Api.runtimeconfig.json
+C:\Users\Vlad Gheorghita\Documents\Development\Garagebet\GarageBetApi\bin\Debug\netcoreapp2.0\GarageBet.Api.runtimeconfig.dev.json
+C:\Users\Vlad Gheorghita\Documents\Development\Garagebet\GarageBetApi\bin\Debug\netcoreapp2.0\GarageBet.Api.dll
+C:\Users\Vlad Gheorghita\Documents\Development\Garagebet\GarageBetApi\bin\Debug\netcoreapp2.0\GarageBet.Api.pdb
+C:\Users\Vlad Gheorghita\Documents\Development\Garagebet\GarageBetApi\obj\Debug\netcoreapp2.0\GarageBet.Api.csprojResolveAssemblyReference.cache
+C:\Users\Vlad Gheorghita\Documents\Development\Garagebet\GarageBetApi\obj\Debug\netcoreapp2.0\GarageBet.Api.csproj.CoreCompileInputs.cache
+C:\Users\Vlad Gheorghita\Documents\Development\Garagebet\GarageBetApi\obj\Debug\netcoreapp2.0\GarageBet.Api.AssemblyInfoInputs.cache
+C:\Users\Vlad Gheorghita\Documents\Development\Garagebet\GarageBetApi\obj\Debug\netcoreapp2.0\GarageBet.Api.AssemblyInfo.cs
+C:\Users\Vlad Gheorghita\Documents\Development\Garagebet\GarageBetApi\obj\Debug\netcoreapp2.0\GarageBet.Api.dll
+C:\Users\Vlad Gheorghita\Documents\Development\Garagebet\GarageBetApi\obj\Debug\netcoreapp2.0\GarageBet.Api.pdb

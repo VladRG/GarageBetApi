@@ -95,10 +95,6 @@ namespace GarageBet.Api.Database
                 .HasIndex(row => new { row.Name, row.CompetitiveYear })
                 .IsUnique();
 
-            builder.Entity<Match>()
-                .HasIndex(row => new { row.HomeTeamId, row.AwayTeamId, row.ChampionshipId })
-                .IsUnique();
-
             builder.Entity<Team>()
                 .HasIndex(row => new { row.Name })
                 .IsUnique();

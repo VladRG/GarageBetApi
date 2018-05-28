@@ -30,6 +30,8 @@ namespace GarageBet.Api.Database.Tables
         public Team HomeTeam { get; set; }
 
         public Team AwayTeam { get; set; }
+
+        public string Standing { get; set; }
         
     }
 }

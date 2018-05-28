@@ -31,5 +31,7 @@ namespace GarageBet.Api.Models
 
         public BetState BetState { get; set; }
 
+        public string Standing { get; set; }
+
     }
 }

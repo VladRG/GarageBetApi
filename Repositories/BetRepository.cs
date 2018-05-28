@@ -25,7 +25,7 @@ namespace GarageBet.Api.Repository.Repositories
             var match = _context.Matches.Single(row => row.Id == matchId);
             var result = new BetFormModel
             {
-                
+
             };
             return result;
         }
@@ -76,7 +76,8 @@ namespace GarageBet.Api.Repository.Repositories
                     AwayScore = match.AwayScore,
                     ChampionshipName = match.Championship.Name,
                     CompetitiveYear = match.Championship.CompetitiveYear,
-                    BetState = GetBetState(match, userId, bet)
+                    BetState = GetBetState(match, userId, bet),
+                    Standing = match.Standing
                 });
             }
             return result;
@@ -204,7 +205,7 @@ namespace GarageBet.Api.Repository.Repositories
 
         public Bet Update(Bet entity)
         {
-            _context.Bets.Remove(entity);
+            _context.Bets.Update(entity);
             _context.SaveChanges();
             return entity;
         }

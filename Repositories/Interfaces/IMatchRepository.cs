@@ -12,6 +12,10 @@ namespace GarageBet.Api.Repository.Interfaces
 
         IEnumerable<MatchBetModel> ListMatchBets(long userId);
 
+        IEnumerable<MatchBetModel> GetForChampionship(long championshipId, long userId);
+
+        IEnumerable<MatchBetModel> GetForToday(long userId);
+
         IEnumerable<MatchStats> GetMatchStats(long matchId);
 
         MatchModel FindForBet(long betId);
