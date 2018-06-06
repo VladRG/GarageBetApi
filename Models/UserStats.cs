@@ -16,6 +16,7 @@ namespace GarageBet.Api.Models
 
         public int Lost { get; set; }
 
-        public int Position { get; set; }
+        public int Count { get; set; }
     }
+
 }

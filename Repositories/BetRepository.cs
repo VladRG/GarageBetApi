@@ -144,15 +144,68 @@ namespace GarageBet.Api.Repository.Repositories
             return stats;
         }
 
-        public IEnumerable<UserStats> GetUserStats()
+        public IEnumerable<UserStats> GetUserStats(int championshipId)
         {
-            List<UserStats> stats = new List<UserStats>();
-            foreach (var user in _context.Users.ToList())
+            List<UserStats> users = null;
+            if (championshipId == 0)
             {
-                stats.Add(GetUserStat(user.Id));
+                users = _context.Users.Select(row => new UserStats
+                {
+                    User = new UserModel
+                    {
+                        Email = row.Email,
+                        FirstName = row.FirstName,
+                        LastName = row.LastName
+                    },
+                    Won = row.Bets.Where(
+                        bet => bet.Match.HomeScore == bet.HomeScore &&
+                        bet.Match.AwayScore == bet.AwayScore &&
+                        bet.Match.HomeScore > -1 && bet.Match.AwayScore > -1
+                        ).Count(),
+                    Result = row.Bets.Where(bet =>
+                         ((bet.Match.HomeScore < bet.Match.AwayScore && bet.HomeScore < bet.AwayScore) ||
+                         (bet.Match.HomeScore > bet.Match.AwayScore && bet.HomeScore > bet.AwayScore) ||
+                         (bet.Match.HomeScore == bet.Match.AwayScore && bet.HomeScore == bet.AwayScore)) &&
+                         bet.Match.HomeScore > -1 && bet.Match.AwayScore > -1
+                         ).Count(),
+                    Count = row.Bets.Where(bet => bet.Match.HomeScore > -1 && bet.Match.AwayScore > -1).Count(),
+                    Lost = 0
+                }).OrderByDescending(r => ((r.Won * 3) + r.Result)).ToList();
             }
-            stats = stats.OrderByDescending(row => (row.Won * 3) + row.Result).ToList();
-            return stats;
+            else
+            {
+                users = _context.Users.Select(row => new UserStats
+                {
+                    User = new UserModel
+                    {
+                        Email = row.Email,
+                        FirstName = row.FirstName,
+                        LastName = row.LastName
+                    },
+                    Won = row.Bets.Where(bet =>
+                        bet.Match.HomeScore == bet.HomeScore &&
+                        bet.Match.AwayScore == bet.AwayScore &&
+                        bet.Match.Championship.Id == championshipId &&
+                        bet.Match.HomeScore > -1 && bet.Match.AwayScore > -1
+                    )
+                        .Count(),
+                    Result = row.Bets.Where(bet =>
+                             ((bet.Match.HomeScore < bet.Match.AwayScore && bet.HomeScore < bet.AwayScore) ||
+                             (bet.Match.HomeScore > bet.Match.AwayScore && bet.HomeScore > bet.AwayScore) ||
+                             (bet.Match.HomeScore == bet.Match.AwayScore && bet.HomeScore == bet.AwayScore)) &&
+                             bet.Match.Championship.Id == championshipId &&
+                             bet.Match.HomeScore > -1 && bet.Match.AwayScore > -1
+                         ).Count(),
+                    Count = row.Bets.Where(bet =>
+                        bet.Match.Championship.Id == championshipId &&
+                        bet.Match.HomeScore > -1 && bet.Match.AwayScore > -1
+                    ).Count(),
+                    Lost = 0
+                }).OrderByDescending(r => ((r.Won * 3) + r.Result))
+                .ToList();
+            }
+
+            return users;
         }
         #endregion
 

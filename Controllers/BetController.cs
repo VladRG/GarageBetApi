@@ -103,12 +103,12 @@ namespace GarageBet.Api.Controllers
         }
 
         [HttpGet("/leaderboard")]
-        public IActionResult Leaderboard()
+        public IActionResult Leaderboard([FromQuery] int championshipId)
         {
             IEnumerable<UserStats> stats;
             try
             {
-                stats = _repository.GetUserStats();
+                stats = _repository.GetUserStats(championshipId);
             }
             catch (Exception ex)
             {
