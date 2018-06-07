@@ -62,7 +62,7 @@ namespace GarageBet.Api.Controllers
                 return InternalServerError(ex.Message);
             }
 
-            if (user == null)
+            if (existingUser == null)
             {
                 return NotFound();
             }
