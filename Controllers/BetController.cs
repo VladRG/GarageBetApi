@@ -103,19 +103,33 @@ namespace GarageBet.Api.Controllers
         }
 
         [HttpGet("/leaderboard")]
-        public IActionResult Leaderboard([FromQuery] int championshipId)
+        public IActionResult Leaderboard([FromQuery] int championshipId, [FromQuery] int page, [FromQuery] int pageSize)
         {
             IEnumerable<UserStats> stats;
+            int count = 0;
+            int position = 0;
+            User user = GetUserFromAuthorizationHeader();
+
             try
             {
-                stats = _repository.GetUserStats(championshipId);
+                stats = _repository.GetUserStats(championshipId, page, pageSize);
+                if (page == 0)
+                {
+                    count = _repository.GetUserCount();
+                    position = _repository.GetUserLeaderboardPosition(user.Email);
+                }
             }
             catch (Exception ex)
             {
                 return InternalServerError(ex.Message);
             }
 
-            return Ok(stats);
+            return Ok(new
+            {
+                stats = stats,
+                count = count,
+                position = position
+            });
         }
     }
 }

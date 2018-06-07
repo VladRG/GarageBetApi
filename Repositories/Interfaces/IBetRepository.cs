@@ -14,6 +14,10 @@ namespace GarageBet.Api.Repository.Interfaces
 
         UserStats GetUserStat(long userId);
 
-        IEnumerable<UserStats> GetUserStats(int championshipId);
+        IEnumerable<UserStats> GetUserStats(int championshipId, int page, int pageSize);
+
+        int GetUserCount();
+
+        int GetUserLeaderboardPosition(string email);
     }
 }

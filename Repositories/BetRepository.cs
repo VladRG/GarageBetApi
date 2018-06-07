@@ -144,7 +144,7 @@ namespace GarageBet.Api.Repository.Repositories
             return stats;
         }
 
-        public IEnumerable<UserStats> GetUserStats(int championshipId)
+        public IEnumerable<UserStats> GetUserStats(int championshipId, int page, int pageSize)
         {
             List<UserStats> users = null;
             if (championshipId == 0)
@@ -166,11 +166,13 @@ namespace GarageBet.Api.Repository.Repositories
                          ((bet.Match.HomeScore < bet.Match.AwayScore && bet.HomeScore < bet.AwayScore) ||
                          (bet.Match.HomeScore > bet.Match.AwayScore && bet.HomeScore > bet.AwayScore) ||
                          (bet.Match.HomeScore == bet.Match.AwayScore && bet.HomeScore == bet.AwayScore)) &&
+                         (bet.Match.HomeScore != bet.HomeScore || bet.Match.AwayScore != bet.AwayScore) &&
                          bet.Match.HomeScore > -1 && bet.Match.AwayScore > -1
                          ).Count(),
                     Count = row.Bets.Where(bet => bet.Match.HomeScore > -1 && bet.Match.AwayScore > -1).Count(),
                     Lost = 0
-                }).OrderByDescending(r => ((r.Won * 3) + r.Result)).ToList();
+                }).OrderByDescending(r => ((r.Won * 3) + r.Result))
+                .Skip(page * pageSize).Take(pageSize).ToList();
             }
             else
             {
@@ -206,6 +208,44 @@ namespace GarageBet.Api.Repository.Repositories
             }
 
             return users;
+        }
+
+        public int GetUserLeaderboardPosition(string email)
+        {
+            var users = _context.Users.Select(row => new UserStats
+            {
+                User = new UserModel
+                {
+                    Email = row.Email,
+                    FirstName = row.FirstName,
+                    LastName = row.LastName
+                },
+                Won = row.Bets.Where(bet =>
+                    bet.Match.HomeScore == bet.HomeScore &&
+                    bet.Match.AwayScore == bet.AwayScore &&
+                    bet.Match.HomeScore > -1 && bet.Match.AwayScore > -1
+                     )
+                         .Count(),
+                Result = row.Bets.Where(bet =>
+                         ((bet.Match.HomeScore < bet.Match.AwayScore && bet.HomeScore < bet.AwayScore) ||
+                         (bet.Match.HomeScore > bet.Match.AwayScore && bet.HomeScore > bet.AwayScore) ||
+                         (bet.Match.HomeScore == bet.Match.AwayScore && bet.HomeScore == bet.AwayScore)) &&
+                         bet.Match.HomeScore > -1 && bet.Match.AwayScore > -1
+                          ).Count(),
+                Count = row.Bets.Where(bet =>
+                    bet.Match.HomeScore > -1 && bet.Match.AwayScore > -1
+                     ).Count(),
+                Lost = 0
+            }).OrderByDescending(r => ((r.Won * 3) + r.Result))
+                  .ToList();
+
+            var user = users.Where(r => r.User.Email == email).FirstOrDefault();
+            return users.IndexOf(user);
+        }
+
+        public int GetUserCount()
+        {
+            return _context.Users.Count();
         }
         #endregion
 
