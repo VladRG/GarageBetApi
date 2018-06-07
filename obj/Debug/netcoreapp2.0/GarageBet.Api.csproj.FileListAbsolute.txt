@@ -30,3 +30,4 @@ C:\Users\Vlad Gheorghita\Documents\Development\Garagebet\GarageBetApi\obj\Debug\
 C:\Users\Vlad Gheorghita\Documents\Development\Garagebet\GarageBetApi\obj\Debug\netcoreapp2.0\GarageBet.Api.AssemblyInfo.cs
 C:\Users\Vlad Gheorghita\Documents\Development\Garagebet\GarageBetApi\obj\Debug\netcoreapp2.0\GarageBet.Api.dll
 C:\Users\Vlad Gheorghita\Documents\Development\Garagebet\GarageBetApi\obj\Debug\netcoreapp2.0\GarageBet.Api.pdb
+C:\Users\vladg\Documents\Development\vladg\GarageBetApi\obj\Debug\netcoreapp2.0\GarageBet.Api.csprojResolveAssemblyReference.cache
