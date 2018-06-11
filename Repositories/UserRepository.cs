@@ -26,6 +26,8 @@ namespace GarageBet.Api.Repository.Repositories
             {
                 user = _context.Users
                       .Include(row => row.Claims)
+                      .Include(row => row.Bets)
+                      .AsNoTracking()
                       .Single(row => row.Email == email);
             }
             catch (Exception ex)

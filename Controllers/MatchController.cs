@@ -4,6 +4,7 @@ using GarageBet.Api.Repository.Interfaces;
 using GarageBet.Api.Models;
 using GarageBet.Api.Database.Tables;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GarageBet.Api.Controllers
 {
@@ -146,6 +147,7 @@ namespace GarageBet.Api.Controllers
         }
 
         [HttpPost("/match", Name = "Add Match")]
+        [Authorize(Policy = "Admin")]
         public IActionResult Add([FromBody]Match match)
         {
             try
@@ -160,6 +162,7 @@ namespace GarageBet.Api.Controllers
         }
 
         [HttpPut("/match/{id}", Name = "Update Match")]
+        [Authorize(Policy = "Admin")]
         public IActionResult Update(long id, [FromBody]Match match)
         {
             try
@@ -174,6 +177,7 @@ namespace GarageBet.Api.Controllers
         }
 
         [HttpDelete("/match/{id}", Name = "Delete Match")]
+        [Authorize(Policy = "Admin")]
         public IActionResult Delete(long id)
         {
             Match match;

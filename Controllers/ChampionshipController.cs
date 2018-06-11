@@ -4,6 +4,7 @@ using GarageBet.Api.Repository.Interfaces;
 using GarageBet.Api.Models;
 using GarageBet.Api.Database.Tables;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GarageBet.Api.Controllers
 {
@@ -59,6 +60,7 @@ namespace GarageBet.Api.Controllers
         }
 
         [HttpPost("/championship", Name = "Add Championship")]
+        [Authorize(Policy = "Admin")]
         public IActionResult Add([FromBody]Championship championship)
         {
             try
@@ -73,6 +75,7 @@ namespace GarageBet.Api.Controllers
         }
 
         [HttpPut("/championship/{id}", Name = "Update Championship")]
+        [Authorize(Policy = "Admin")]
         public IActionResult Update(long id, [FromBody]Championship championship)
         {
             try
@@ -87,6 +90,7 @@ namespace GarageBet.Api.Controllers
         }
 
         [HttpDelete("/championship/{id}", Name = "Delete Championship")]
+        [Authorize(Policy = "Admin")]
         public IActionResult Delete(long id)
         {
             try
@@ -102,6 +106,7 @@ namespace GarageBet.Api.Controllers
         }
 
         [HttpPut("/championship/{id}/team", Name = "Add Team to Championship")]
+        [Authorize(Policy = "Admin")]
         public IActionResult AddTeamToChampionship(long id, long teamId)
         {
             Championship championship;
@@ -125,6 +130,7 @@ namespace GarageBet.Api.Controllers
         }
 
         [HttpDelete("/championship/{id}/{teamId}", Name = "Remove Team from Championship")]
+        [Authorize(Policy = "Admin")]
         public IActionResult RemoveTeamFromChampionship(long id, long teamId)
         {
             Championship championship;

@@ -58,7 +58,22 @@ namespace GarageBet.Api.Controllers
         public IActionResult Update(long id, [FromBody]Bet bet)
         {
             User user = GetUserFromAuthorizationHeader();
-            bet.UserId = user.Id;
+            bool isOwner = false;
+            foreach (var userBet in user.Bets)
+            {
+                if (userBet.Id == bet.Id)
+                {
+                    isOwner = true;
+                    bet.UserId = user.Id;
+                    break;
+                }
+            }
+
+            if (!isOwner)
+            {
+                return Unauthorized();
+            }
+
             try
             {
                 _repository.Update(bet);

@@ -90,7 +90,12 @@ namespace GarageBet.Api.Repository.Repositories
 
         public IEnumerable<LeaderboardModel> GetUserLeaderboards(long userId, int page, int pageSize)
         {
-            User user = _context.Users.Find(userId);
+            User user = _context.Users
+                .Include(row => row.Leaderboards)
+                .Include("Leaderboards.Leaderboard")
+                .Include("Leaderboards.Leaderboard.Admin")
+                .Where(row => row.Id == userId).First();
+
             List<LeaderboardModel> leaderboards = new List<LeaderboardModel>();
             foreach (var leaderboard in user.Leaderboards)
             {
@@ -98,9 +103,9 @@ namespace GarageBet.Api.Repository.Repositories
                 {
                     Admin = new UserModel
                     {
-                        Email = user.Email,
-                        FirstName = user.FirstName,
-                        LastName = user.LastName
+                        Email = leaderboard.Leaderboard.Admin.Email,
+                        FirstName = leaderboard.Leaderboard.Admin.FirstName,
+                        LastName = leaderboard.Leaderboard.Admin.LastName
                     },
                     Id = leaderboard.LeaderboardId,
                     Users = leaderboard.Leaderboard.Users.Select(row => new UserStats
@@ -142,7 +147,9 @@ namespace GarageBet.Api.Repository.Repositories
                     .Include(row => row.Users)
                     .Include("Users.User")
                     .Include("Users.User.Bets")
-                    .Include("Users.User.Bets.Match").First();
+                    .Include("Users.User.Bets.Match")
+                    .Where(row => row.Id == group)
+                    .First();
                 users = leaderboard.Users.Select(row => new UserStats
                 {
                     User = new UserModel
@@ -293,6 +300,7 @@ namespace GarageBet.Api.Repository.Repositories
             User user = _context.Users
                 .Include(row => row.Leaderboards)
                 .Include("Leaderboards.Leaderboard")
+                .Include("Leaderboards.Leaderboard.Admin")
                 .Where(row => row.Id == userId).First();
             return user.Leaderboards.Select(row => new LeaderboardSummaryModel
             {
@@ -300,9 +308,9 @@ namespace GarageBet.Api.Repository.Repositories
                 Name = row.Leaderboard.Name,
                 Owner = new UserModel
                 {
-                    Email = user.Email,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName
+                    Email = row.Leaderboard.Admin.Email,
+                    FirstName = row.Leaderboard.Admin.FirstName,
+                    LastName = row.Leaderboard.Admin.LastName
                 }
             }).ToList();
         }

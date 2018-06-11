@@ -1,6 +1,7 @@
 ﻿using GarageBet.Api.Database.Tables;
 using GarageBet.Api.Models;
 using GarageBet.Api.Repository.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -83,6 +84,7 @@ namespace GarageBet.Api.Controllers
         }
 
         [HttpPost("/team", Name = "Add Team")]
+        [Authorize(Policy = "Admin")]
         public IActionResult Add([FromBody]Team team)
         {
             try
@@ -97,6 +99,7 @@ namespace GarageBet.Api.Controllers
         }
 
         [HttpPut("/team/{id}", Name = "Update Team")]
+        [Authorize(Policy = "Admin")]
         public IActionResult Update(long id, [FromBody]Team team)
         {
             try
@@ -111,6 +114,7 @@ namespace GarageBet.Api.Controllers
         }
 
         [HttpDelete("/team/{id}", Name = "Delete Team")]
+        [Authorize(Policy = "Admin")]
         public IActionResult Delete(long id)
         {
             try

@@ -35,9 +35,9 @@ namespace GarageBet.Api.Configuration
 
             services.AddAuthorization(configuration =>
             {
-                configuration.AddPolicy("CanCloseMatches", policy =>
+                configuration.AddPolicy("Admin", policy =>
                 {
-                    policy.RequireClaim("CanCloseMatches", "true");
+                    policy.RequireClaim("Admin", "true");
                 });
             });
 

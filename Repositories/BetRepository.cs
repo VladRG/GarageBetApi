@@ -144,7 +144,7 @@ namespace GarageBet.Api.Repository.Repositories
             return stats;
         }
 
-       
+
         #endregion
 
         #region IRepository
@@ -196,6 +196,7 @@ namespace GarageBet.Api.Repository.Repositories
 
         public Bet Update(Bet entity)
         {
+            _context.SaveChanges();
             _context.Bets.Update(entity);
             _context.SaveChanges();
             return entity;

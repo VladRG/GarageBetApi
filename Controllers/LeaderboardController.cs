@@ -29,11 +29,8 @@ namespace GarageBet.Api.Controllers
             try
             {
                 stats = _repository.GetUserStats(page, pageSize, group);
-                if (page == 0)
-                {
-                    count = _repository.GetUserCount(group);
-                    position = _repository.GetUserLeaderboardPosition(user.Email, group);
-                }
+                count = _repository.GetUserCount(group);
+                position = _repository.GetUserLeaderboardPosition(user.Email, group);
             }
             catch (Exception ex)
             {
