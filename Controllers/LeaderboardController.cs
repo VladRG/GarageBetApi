@@ -64,13 +64,13 @@ namespace GarageBet.Api.Controllers
             return Ok(leaderboards);
         }
 
-        [HttpGet("leaderboard/edit/{id}")]
+        [HttpGet("leaderboard/edit/{group}")]
         public IActionResult GetLeaderboardForEdit(long group)
         {
             LeaderboardAddModel leaderboard;
             try
             {
-                leaderboard = _repository.GetleaderboardForEdit(group);
+                leaderboard = _repository.GetLeaderboardForEdit(group);
             }
             catch (Exception ex)
             {
@@ -138,7 +138,22 @@ namespace GarageBet.Api.Controllers
             return Created("", "");
         }
 
-        [HttpPut("leaderboard/leavel/{id}")]
+        [HttpPut("/leaderboard/{group}")]
+        public IActionResult UpdateLeaderboard(long group, [FromBody] LeaderboardAddModel leaderboard)
+        {
+            User user = GetUserFromAuthorizationHeader();
+            try
+            {
+                _repository.Update(leaderboard);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex.Message);
+            }
+            return Created("", "");
+        }
+
+        [HttpPut("leaderboard/leave/{id}")]
         public IActionResult LeaveLeaderboard(long id)
         {
             User user = GetUserFromAuthorizationHeader();

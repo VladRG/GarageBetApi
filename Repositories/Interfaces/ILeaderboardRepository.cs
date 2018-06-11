@@ -24,8 +24,10 @@ namespace GarageBet.Api.Repository.Interfaces
 
         List<LeaderboardSummaryModel> GetLeaderboarSummaries(long userId);
 
-        LeaderboardAddModel GetleaderboardForEdit(long group);
+        LeaderboardAddModel GetLeaderboardForEdit(long group);
 
         void LeaveLeaderboard(long userId, long group);
+
+        Leaderboard Update(LeaderboardAddModel entity);
     }
 }

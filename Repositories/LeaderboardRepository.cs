@@ -272,6 +272,22 @@ namespace GarageBet.Api.Repository.Repositories
             return Add(addLeaderboard);
         }
 
+        public Leaderboard Update(LeaderboardAddModel entity)
+        {
+            var leaderboardUsers = _context.LeaderboardUsers
+                .Where(e => e.LeaderboardId == entity.Id).ToList();
+            _context.RemoveRange(leaderboardUsers);
+            _context.SaveChanges();
+
+            Leaderboard leaderboard = _context.Leaderboards.Find(entity.Id);
+            leaderboard.Name = entity.Name;
+            leaderboard.Users = entity.Users.Select(row => new LeaderboardUser
+            {
+                UserId = _context.Users.Where(user => row.Email == user.Email).First().Id,
+            }).ToList();
+            return Update(leaderboard);
+        }
+
         public List<LeaderboardSummaryModel> GetLeaderboarSummaries(long userId)
         {
             User user = _context.Users
@@ -291,7 +307,7 @@ namespace GarageBet.Api.Repository.Repositories
             }).ToList();
         }
 
-        public LeaderboardAddModel GetleaderboardForEdit(long group)
+        public LeaderboardAddModel GetLeaderboardForEdit(long group)
         {
             Leaderboard leaderboard = _context.Leaderboards
                 .Include(row => row.Users)
@@ -300,8 +316,9 @@ namespace GarageBet.Api.Repository.Repositories
 
             return new LeaderboardAddModel
             {
-                AdminId = leaderboard.Id,
+                AdminId = leaderboard.AdminId,
                 Name = leaderboard.Name,
+                Id = leaderboard.Id,
                 Users = leaderboard.Users.Select(user => new UserModel
                 {
                     Email = user.User.Email,
@@ -348,25 +365,13 @@ namespace GarageBet.Api.Repository.Repositories
         {
             _context.Leaderboards.Update(entity);
             _context.SaveChanges();
-            var leaderboardUsers = _context.LeaderboardUsers.Where(e => e.LeaderboardId == entity.Id).ToList();
-            _context.RemoveRange(leaderboardUsers);
-            _context.SaveChanges();
-
-            leaderboardUsers = new List<LeaderboardUser>();
-            foreach (var user in entity.Users)
-            {
-                leaderboardUsers.Add(new LeaderboardUser { UserId = user.UserId, LeaderboardId = entity.Id });
-            }
-
-            _context.LeaderboardUsers.AddRange(leaderboardUsers);
-            _context.SaveChanges();
-
             return entity;
         }
 
         public void Remove(Leaderboard entity)
         {
             _context.Leaderboards.Remove(entity);
+            _context.SaveChanges();
         }
 
         public Task<Leaderboard> FindAsync(long id)
@@ -429,11 +434,6 @@ namespace GarageBet.Api.Repository.Repositories
             {
                 return BetState.Lost;
             }
-        }
-
-        LeaderboardAddModel ILeaderboardRepository.GetleaderboardForEdit(long group)
-        {
-            throw new NotImplementedException();
         }
     }
 }
