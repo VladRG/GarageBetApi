@@ -128,6 +128,28 @@ namespace GarageBet.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Leaderboards",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    AdminId = table.Column<long>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
+                    UpdateAt = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Leaderboards", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Leaderboards_Users_AdminId",
+                        column: x => x.AdminId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserClaims",
                 columns: table => new
                 {
@@ -180,6 +202,31 @@ namespace GarageBet.Api.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "LeaderboardUser",
+                columns: table => new
+                {
+                    LeaderboardId = table.Column<long>(nullable: false),
+                    UserId = table.Column<long>(nullable: false),
+                    Accepted = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LeaderboardUser", x => new { x.LeaderboardId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_LeaderboardUser_Leaderboards_LeaderboardId",
+                        column: x => x.LeaderboardId,
+                        principalTable: "Leaderboards",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_LeaderboardUser_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Bets_MatchId",
                 table: "Bets",
@@ -201,6 +248,16 @@ namespace GarageBet.Api.Migrations
                 name: "IX_ChampionshipTeams_TeamId",
                 table: "ChampionshipTeams",
                 column: "TeamId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Leaderboards_AdminId",
+                table: "Leaderboards",
+                column: "AdminId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LeaderboardUser_UserId",
+                table: "LeaderboardUser",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Matches_AwayTeamId",
@@ -250,19 +307,25 @@ namespace GarageBet.Api.Migrations
                 name: "ChampionshipTeams");
 
             migrationBuilder.DropTable(
+                name: "LeaderboardUser");
+
+            migrationBuilder.DropTable(
                 name: "UserClaims");
 
             migrationBuilder.DropTable(
                 name: "Matches");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Leaderboards");
 
             migrationBuilder.DropTable(
                 name: "Teams");
 
             migrationBuilder.DropTable(
                 name: "Championships");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

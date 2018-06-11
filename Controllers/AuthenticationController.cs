@@ -30,6 +30,21 @@ namespace GarageBet.Api.Controllers
 
         private IUserRepository _userRepository;
 
+        [HttpGet("user")]
+        public IActionResult GetUsers()
+        {
+            List<UserModel> users = new List<UserModel>();
+            try
+            {
+                users = _userRepository.GetUsers();
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex.Message);
+            }
+            return Ok(users);
+        }
+
         public IActionResult Index()
         {
             return Ok(_userRepository.List());

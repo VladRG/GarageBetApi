@@ -28,6 +28,8 @@ namespace GarageBet.Api.Database.Tables
 
         public ICollection<UserClaim> Claims { get; set; }
 
+        public ICollection<LeaderboardUser> Leaderboards { get; set; }
+
     }
 
 }

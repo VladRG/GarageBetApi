@@ -11,13 +11,5 @@ namespace GarageBet.Api.Repository.Interfaces
         BetFormModel GetModelForEdit(long betId);
 
         IEnumerable<MatchBetModel> GetAvailable(long userId);
-
-        UserStats GetUserStat(long userId);
-
-        IEnumerable<UserStats> GetUserStats(int championshipId, int page, int pageSize);
-
-        int GetUserCount();
-
-        int GetUserLeaderboardPosition(string email);
     }
 }

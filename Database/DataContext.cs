@@ -21,15 +21,17 @@ namespace GarageBet.Api.Database
         {
             ConfigureIndexes(builder);
             ConfigureChampionshipTeam(builder);
+            ConfigureLeaderboardUser(builder);
             ConfigureMatches(builder);
             base.OnModelCreating(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            //options.UseMySql("Server=localhost;database=garagebet;user=root;pwd=", config => {
+            //options.UseMySql("Server=localhost;database=garagebet;user=root;pwd=", config =>
+            //{
             //    config.MigrationsAssembly("GarageBet.Api");
-            //});
+            // });
             base.OnConfiguring(options);
         }
 
@@ -48,6 +50,8 @@ namespace GarageBet.Api.Database
         public DbSet<Bet> Bets { get; set; }
 
         public DbSet<Match> Matches { get; set; }
+
+        public DbSet<Leaderboard> Leaderboards { get; set; }
         #endregion
 
         #region Configuration
@@ -82,7 +86,20 @@ namespace GarageBet.Api.Database
             builder.Entity<ChampionshipTeam>()
                 .HasOne(e => e.Championship)
                 .WithMany(row => row.ChampionshipTeams);
+        }
 
+        private void ConfigureLeaderboardUser(ModelBuilder builder)
+        {
+            builder.Entity<LeaderboardUser>()
+                .HasKey(row => new { row.LeaderboardId, row.UserId });
+
+            builder.Entity<LeaderboardUser>()
+                .HasOne(e => e.Leaderboard)
+                .WithMany(e => e.Users);
+
+            builder.Entity<LeaderboardUser>()
+                .HasOne(e => e.User)
+                .WithMany(e => e.Leaderboards);
         }
 
         private void ConfigureIndexes(ModelBuilder builder)

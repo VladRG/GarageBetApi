@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System;
 using GarageBet.Api.Database;
+using GarageBet.Api.Models;
 
 namespace GarageBet.Api.Repository.Repositories
 {
@@ -32,6 +33,16 @@ namespace GarageBet.Api.Repository.Repositories
                 return null;
             }
             return user;
+        }
+
+        public List<UserModel> GetUsers()
+        {
+            return _context.Users.Select(user => new UserModel
+            {
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName
+            }).ToList();
         }
         #endregion
 

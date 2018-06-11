@@ -85,51 +85,5 @@ namespace GarageBet.Api.Controllers
             }
             return Ok();
         }
-
-        [HttpGet("/stats")]
-        public IActionResult Stats()
-        {
-            User user = GetUserFromAuthorizationHeader();
-            UserStats stat;
-            try
-            {
-                stat = _repository.GetUserStat(user.Id);
-            }
-            catch (Exception ex)
-            {
-                return InternalServerError(ex.Message);
-            }
-            return Ok(stat);
-        }
-
-        [HttpGet("/leaderboard")]
-        public IActionResult Leaderboard([FromQuery] int championshipId, [FromQuery] int page, [FromQuery] int pageSize)
-        {
-            IEnumerable<UserStats> stats;
-            int count = 0;
-            int position = 0;
-            User user = GetUserFromAuthorizationHeader();
-
-            try
-            {
-                stats = _repository.GetUserStats(championshipId, page, pageSize);
-                if (page == 0)
-                {
-                    count = _repository.GetUserCount();
-                    position = _repository.GetUserLeaderboardPosition(user.Email);
-                }
-            }
-            catch (Exception ex)
-            {
-                return InternalServerError(ex.Message);
-            }
-
-            return Ok(new
-            {
-                stats = stats,
-                count = count,
-                position = position
-            });
-        }
     }
 }

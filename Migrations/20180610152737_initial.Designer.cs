@@ -11,7 +11,7 @@ using System;
 namespace GarageBet.Api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20180528171451_initial")]
+    [Migration("20180610152737_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -38,6 +38,21 @@ namespace GarageBet.Api.Migrations
                     b.HasIndex("TeamId");
 
                     b.ToTable("ChampionshipTeams");
+                });
+
+            modelBuilder.Entity("GarageBet.Api.Database.LeaderboardUser", b =>
+                {
+                    b.Property<long>("LeaderboardId");
+
+                    b.Property<long>("UserId");
+
+                    b.Property<bool>("Accepted");
+
+                    b.HasKey("LeaderboardId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("LeaderboardUser");
                 });
 
             modelBuilder.Entity("GarageBet.Api.Database.Tables.Bet", b =>
@@ -90,6 +105,27 @@ namespace GarageBet.Api.Migrations
                         .IsUnique();
 
                     b.ToTable("Championships");
+                });
+
+            modelBuilder.Entity("GarageBet.Api.Database.Tables.Leaderboard", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long>("AdminId");
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<DateTime>("UpdateAt");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdminId");
+
+                    b.ToTable("Leaderboards");
                 });
 
             modelBuilder.Entity("GarageBet.Api.Database.Tables.Match", b =>
@@ -223,6 +259,19 @@ namespace GarageBet.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("GarageBet.Api.Database.LeaderboardUser", b =>
+                {
+                    b.HasOne("GarageBet.Api.Database.Tables.Leaderboard", "Leaderboard")
+                        .WithMany("Users")
+                        .HasForeignKey("LeaderboardId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("GarageBet.Api.Database.Tables.User", "User")
+                        .WithMany("Leaderboards")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("GarageBet.Api.Database.Tables.Bet", b =>
                 {
                     b.HasOne("GarageBet.Api.Database.Tables.Match", "Match")
@@ -233,6 +282,14 @@ namespace GarageBet.Api.Migrations
                     b.HasOne("GarageBet.Api.Database.Tables.User", "User")
                         .WithMany("Bets")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("GarageBet.Api.Database.Tables.Leaderboard", b =>
+                {
+                    b.HasOne("GarageBet.Api.Database.Tables.User", "Admin")
+                        .WithMany()
+                        .HasForeignKey("AdminId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
