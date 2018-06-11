@@ -16,7 +16,6 @@ using GarageBet.Api.Models;
 
 namespace GarageBet.Api.Controllers
 {
-    [Route("auth")]
     public class AuthenticationController : GbController
     {
         public AuthenticationController(IOptions<JwtConfiguration> jwtConfiguration, IUserRepository userRepository)

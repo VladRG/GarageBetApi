@@ -66,6 +66,7 @@ namespace GarageBet.Api.Configuration
             services.AddScoped<IMatchRepository, MatchRepository>();
             services.AddScoped<ITeamRepository, TeamRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ILeaderboardRepository, LeaderboardRepository>();
         }
     }
 }

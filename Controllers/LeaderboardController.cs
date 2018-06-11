@@ -19,7 +19,7 @@ namespace GarageBet.Api.Controllers
         }
 
         [HttpGet("/leaderboard")]
-        public IActionResult Leaderboard([FromQuery] int page, [FromQuery] int pageSize)
+        public IActionResult Leaderboard([FromQuery] int page, [FromQuery] int pageSize, [FromQuery] int group)
         {
             IEnumerable<UserStats> stats;
             int count = 0;
@@ -28,11 +28,11 @@ namespace GarageBet.Api.Controllers
 
             try
             {
-                stats = _repository.GetUserStats(page, pageSize);
+                stats = _repository.GetUserStats(page, pageSize, group);
                 if (page == 0)
                 {
-                    count = _repository.GetUserCount();
-                    position = _repository.GetUserLeaderboardPosition(user.Email);
+                    count = _repository.GetUserCount(group);
+                    position = _repository.GetUserLeaderboardPosition(user.Email, group);
                 }
             }
             catch (Exception ex)
@@ -46,6 +46,37 @@ namespace GarageBet.Api.Controllers
                 count = count,
                 position = position
             });
+        }
+
+        [HttpGet("leaderboard/group")]
+        public IActionResult GetUserLeaderboards([FromQuery] int page, [FromQuery] int pageSize)
+        {
+            User user = GetUserFromAuthorizationHeader();
+            List<LeaderboardSummaryModel> leaderboards = new List<LeaderboardSummaryModel>();
+            try
+            {
+                leaderboards = _repository.GetLeaderboarSummaries(user.Id).ToList();
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex.Message);
+            }
+            return Ok(leaderboards);
+        }
+
+        [HttpGet("leaderboard/edit/{id}")]
+        public IActionResult GetLeaderboardForEdit(long group)
+        {
+            LeaderboardAddModel leaderboard;
+            try
+            {
+                leaderboard = _repository.GetleaderboardForEdit(group);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex.Message);
+            }
+            return Ok(leaderboard);
         }
 
         public IActionResult AcceptInvite(long group, [FromBody] Boolean accept)
@@ -83,6 +114,61 @@ namespace GarageBet.Api.Controllers
                 return InternalServerError(ex.Message);
             }
             return Ok(stat);
+        }
+
+        [HttpPost("/leaderboard")]
+        public IActionResult AddLeaderboard([FromBody] LeaderboardAddModel leaderboard)
+        {
+            User user = GetUserFromAuthorizationHeader();
+            leaderboard.AdminId = user.Id;
+            leaderboard.Users.Add(new UserModel
+            {
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName
+            });
+            try
+            {
+                _repository.Add(leaderboard);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex.Message);
+            }
+            return Created("", "");
+        }
+
+        [HttpPut("leaderboard/leavel/{id}")]
+        public IActionResult LeaveLeaderboard(long id)
+        {
+            User user = GetUserFromAuthorizationHeader();
+            try
+            {
+                _repository.LeaveLeaderboard(user.Id, id);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex.Message);
+            }
+
+            return Ok();
+        }
+
+        [HttpDelete("leaderboard/{id}")]
+        public IActionResult DeleteLeaderboard(long id)
+        {
+            User user = GetUserFromAuthorizationHeader();
+            try
+            {
+                var leaderboard = _repository.Find(id);
+                _repository.Remove(leaderboard);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex.Message);
+            }
+
+            return Ok();
         }
     }
 }

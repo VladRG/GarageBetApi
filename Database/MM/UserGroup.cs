@@ -13,6 +13,6 @@ namespace GarageBet.Api.Database
 
         public User User { get; set; }
 
-        public bool Accepted { get; set; }
+        public bool? Accepted { get; set; }
     }
 }

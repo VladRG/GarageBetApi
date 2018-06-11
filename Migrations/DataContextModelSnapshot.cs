@@ -45,13 +45,13 @@ namespace GarageBet.Api.Migrations
 
                     b.Property<long>("UserId");
 
-                    b.Property<bool>("Accepted");
+                    b.Property<bool?>("Accepted");
 
                     b.HasKey("LeaderboardId", "UserId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("LeaderboardUser");
+                    b.ToTable("LeaderboardUsers");
                 });
 
             modelBuilder.Entity("GarageBet.Api.Database.Tables.Bet", b =>
@@ -287,7 +287,7 @@ namespace GarageBet.Api.Migrations
             modelBuilder.Entity("GarageBet.Api.Database.Tables.Leaderboard", b =>
                 {
                     b.HasOne("GarageBet.Api.Database.Tables.User", "Admin")
-                        .WithMany()
+                        .WithMany("ManagedLeaderboards")
                         .HasForeignKey("AdminId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

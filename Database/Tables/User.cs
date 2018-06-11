@@ -30,6 +30,8 @@ namespace GarageBet.Api.Database.Tables
 
         public ICollection<LeaderboardUser> Leaderboards { get; set; }
 
+        public ICollection<Leaderboard> ManagedLeaderboards { get; set; }
+
     }
 
 }

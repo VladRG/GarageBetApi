@@ -79,6 +79,7 @@ namespace GarageBet.Api.Repository.Repositories
         public Championship Add(Championship entity)
         {
             _context.Championships.Add(entity);
+            _context.SaveChanges();
             var teams = new List<ChampionshipTeam>();
             foreach (var team in entity.Teams)
             {

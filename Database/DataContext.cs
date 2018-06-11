@@ -30,8 +30,8 @@ namespace GarageBet.Api.Database
         {
             //options.UseMySql("Server=localhost;database=garagebet;user=root;pwd=", config =>
             //{
-            //    config.MigrationsAssembly("GarageBet.Api");
-            // });
+            //   config.MigrationsAssembly("GarageBet.Api");
+            //});
             base.OnConfiguring(options);
         }
 
@@ -52,6 +52,8 @@ namespace GarageBet.Api.Database
         public DbSet<Match> Matches { get; set; }
 
         public DbSet<Leaderboard> Leaderboards { get; set; }
+
+        public DbSet<LeaderboardUser> LeaderboardUsers { get; set; }
         #endregion
 
         #region Configuration
@@ -100,6 +102,10 @@ namespace GarageBet.Api.Database
             builder.Entity<LeaderboardUser>()
                 .HasOne(e => e.User)
                 .WithMany(e => e.Leaderboards);
+
+            builder.Entity<Leaderboard>()
+                .HasOne(row => row.Admin)
+                .WithMany(row => row.ManagedLeaderboards);
         }
 
         private void ConfigureIndexes(ModelBuilder builder)

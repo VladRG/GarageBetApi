@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace GarageBet.Api.Migrations
 {
-    public partial class initial : Migration
+    public partial class Leaderboards : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -203,24 +203,24 @@ namespace GarageBet.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "LeaderboardUser",
+                name: "LeaderboardUsers",
                 columns: table => new
                 {
                     LeaderboardId = table.Column<long>(nullable: false),
                     UserId = table.Column<long>(nullable: false),
-                    Accepted = table.Column<bool>(nullable: false)
+                    Accepted = table.Column<bool>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LeaderboardUser", x => new { x.LeaderboardId, x.UserId });
+                    table.PrimaryKey("PK_LeaderboardUsers", x => new { x.LeaderboardId, x.UserId });
                     table.ForeignKey(
-                        name: "FK_LeaderboardUser_Leaderboards_LeaderboardId",
+                        name: "FK_LeaderboardUsers_Leaderboards_LeaderboardId",
                         column: x => x.LeaderboardId,
                         principalTable: "Leaderboards",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_LeaderboardUser_Users_UserId",
+                        name: "FK_LeaderboardUsers_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -255,8 +255,8 @@ namespace GarageBet.Api.Migrations
                 column: "AdminId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LeaderboardUser_UserId",
-                table: "LeaderboardUser",
+                name: "IX_LeaderboardUsers_UserId",
+                table: "LeaderboardUsers",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -307,7 +307,7 @@ namespace GarageBet.Api.Migrations
                 name: "ChampionshipTeams");
 
             migrationBuilder.DropTable(
-                name: "LeaderboardUser");
+                name: "LeaderboardUsers");
 
             migrationBuilder.DropTable(
                 name: "UserClaims");
