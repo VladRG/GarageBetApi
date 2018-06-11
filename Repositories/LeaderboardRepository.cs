@@ -291,7 +291,7 @@ namespace GarageBet.Api.Repository.Repositories
             }).ToList();
         }
 
-        LeaderboardAddModel GetleaderboardForEdit(long group)
+        public LeaderboardAddModel GetleaderboardForEdit(long group)
         {
             Leaderboard leaderboard = _context.Leaderboards
                 .Include(row => row.Users)
@@ -311,7 +311,7 @@ namespace GarageBet.Api.Repository.Repositories
             };
         }
 
-        void LeaveLeaderboard(long userId, long group)
+        public void LeaveLeaderboard(long userId, long group)
         {
             var leaderboardUser = _context.LeaderboardUsers
                 .Where(row => row.UserId == userId && row.LeaderboardId == group)
@@ -429,6 +429,11 @@ namespace GarageBet.Api.Repository.Repositories
             {
                 return BetState.Lost;
             }
+        }
+
+        LeaderboardAddModel ILeaderboardRepository.GetleaderboardForEdit(long group)
+        {
+            throw new NotImplementedException();
         }
     }
 }
